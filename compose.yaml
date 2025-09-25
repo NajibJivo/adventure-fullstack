@@ -9,8 +9,7 @@ services:
       MYSQL_DATABASE: adventurepark
       MYSQL_USER: appuser
       MYSQL_PASSWORD: apppassword
-    ports:
-      - "3307:3306"
+
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
