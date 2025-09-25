@@ -1,5 +1,6 @@
 package com.example.miniProjekt.Repository;
 
+import com.example.miniProjekt.entity.Reservation;
 import com.example.miniProjekt.entity.ReservationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,19 +11,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface ReservationRepository extends JpaRepository {
+public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     // Find reservationer for en bestemt aktivitet
-    List findByActivityId(Long activityId);
+    List<Reservation> findByActivityId(Long activityId);
+
     // Find reservationer efter type
-    List findByType(ReservationType type);
+    List<Reservation> findByType(ReservationType type);
 
     // Find reservationer for en bestemt kunde
-    List findByCustomerNameContainingIgnoreCase(String customerName);
+    List<Reservation> findByCustomerNameContainingIgnoreCase(String customerName);
 
     // Find kommende reservationer
-    List findByReservationTimeAfter(LocalDateTime dateTime);
+    List<Reservation> findByReservationTimeAfter(LocalDateTime dateTime);
 
     // Custom query - find reservationer i et tidsrum
     @Query("SELECT r FROM Reservation r WHERE r.reservationTime BETWEEN :start AND :end ORDER BY r.reservationTime")
-    List findReservationsBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    List<Reservation> findReservationsBetween(@Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 }

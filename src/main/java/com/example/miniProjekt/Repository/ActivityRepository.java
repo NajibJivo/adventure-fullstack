@@ -9,15 +9,14 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ActivityRepository extends JpaRepository {
-    List findByMinAgeLessThanEqual(Integer age);
+public interface ActivityRepository extends JpaRepository<Activity, Long> {
+    List<Activity> findByMinAgeLessThanEqual(Integer age);
 
-    List findByEquipmentRequiredTrue();
+    List<Activity> findByEquipmentRequiredTrue();
 
-    List findByMaxParticipantsGreaterThanEqual(Integer participants);
+    List<Activity> findByMaxParticipantsGreaterThanEqual(Integer participants);
 
     // Custom query - find aktiviteter passende for alder og deltagerantal
     @Query("SELECT a FROM Activity a WHERE a.minAge <= :age AND a.maxParticipants >= :participants")
-    List findSuitableActivities(@Param("age") Integer age, @Param("participants") Integer participants);
-
+    List<Activity> findSuitableActivities(@Param("age") Integer age, @Param("participants") Integer participants);
 }

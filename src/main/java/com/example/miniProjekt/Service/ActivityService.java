@@ -14,11 +14,11 @@ public class ActivityService {
     @Autowired
     private ActivityRepository activityRepository;
 
-    public List getAllActivities() {
+    public List<Activity> getAllActivities() {
         return activityRepository.findAll();
     }
 
-    public Optional getActivityById(Long id) {
+    public Optional<Activity> getActivityById(Long id) {
         return activityRepository.findById(id);
     }
 
@@ -30,15 +30,15 @@ public class ActivityService {
         activityRepository.deleteById(id);
     }
 
-    public List getActivitiesForAge(Integer age) {
+    public List<Activity> getActivitiesForAge(Integer age) {
         return activityRepository.findByMinAgeLessThanEqual(age);
     }
 
-    public List getActivitiesWithEquipment() {
+    public List<Activity> getActivitiesWithEquipment() {
         return activityRepository.findByEquipmentRequiredTrue();
     }
 
-    public List getSuitableActivities(Integer age, Integer participants) {
+    public List<Activity> getSuitableActivities(Integer age, Integer participants) {
         return activityRepository.findSuitableActivities(age, participants);
     }
 

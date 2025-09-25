@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Park Booking System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🎢 Adventure Park</h1>
+        <p>Book dine aktiviteter og se tilgængelige muligheder</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('activities')">Aktiviteter</button>
+        <button class="tab-btn" onclick="showTab('booking')">Book Aktivitet</button>
+        <button class="tab-btn" onclick="showTab('reservations')">Reservationer</button>
+    </div>
+
+    <!-- Activities Tab -->
+    <div id="activities-tab" class="tab-content active">
+        <h2>Tilgængelige Aktiviteter</h2>
+
+        <div class="filter-section">
+            <h3>Filtrer aktiviteter</h3>
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="age-filter">Min. alder:</label>
+                    <input type="number" id="age-filter" placeholder="Indtast alder">
+                </div>
+                <div class="form-group">
+                    <label for="participants-filter">Antal deltagere:</label>
+                    <input type="number" id="participants-filter" placeholder="Antal personer">
+                </div>
+                <div class="form-group">
+                    <button class="btn" onclick="filterActivities()">Filtrer</button>
+                    <button class="btn btn-success" onclick="initTestData()">Indlæs Test Data</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="activities-list" class="loading">
+            Indlæser aktiviteter
+        </div>
+    </div>
+
+    <!-- Booking Tab -->
+    <div id="booking-tab" class="tab-content">
+        <h2>Book en aktivitet</h2>
+
+        <form id="booking-form">
+            <div class="form-group">
+                <label for="activity-select">Vælg aktivitet:</label>
+                <select id="activity-select" required>
+                    <option value="">Vælg aktivitet...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="customer-name">Kundens navn:</label>
+                <input type="text" id="customer-name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="customer-phone">Telefon:</label>
+                <input type="tel" id="customer-phone" required>
+            </div>
+
+            <div class="form-group">
+                <label for="customer-email">E-mail:</label>
+                <input type="email" id="customer-email">
+            </div>
+
+            <div class="form-group">
+                <label for="participant-count">Antal deltagere:</label>
+                <input type="number" id="participant-count" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reservation-datetime">Tidspunkt:</label>
+                <input type="datetime-local" id="reservation-datetime" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reservation-type">Type:</label>
+                <select id="reservation-type">
+                    <option value="PRIVATE">Privat</option>
+                    <option value="CORPORATE">Firmaaftale</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="notes">Noter:</label>
+                <textarea id="notes" rows="3"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">Opret Reservation</button>
+        </form>
+    </div>
+
+    <!-- Reservations Tab -->
+    <div id="reservations-tab" class="tab-content">
+        <h2>Reservationer</h2>
+
+        <div class="filter-section">
+            <button class="btn" onclick="loadReservations('all')">Alle</button>
+            <button class="btn" onclick="loadReservations('upcoming')">Kommende</button>
+            <button class="btn" onclick="loadReservations('private')">Private</button>
+            <button class="btn" onclick="loadReservations('corporate')">Firmaaftaler</button>
+        </div>
+
+        <div id="reservations-list" class="loading">
+            Indlæser reservationer
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

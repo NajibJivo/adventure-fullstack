@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/activities")
 @CrossOrigin(origins = "*")
@@ -17,12 +16,12 @@ public class ActivityController {
     private ActivityService activityService;
 
     @GetMapping
-    public List getAllActivities() {
+    public List<Activity> getAllActivities() {
         return activityService.getAllActivities();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getActivityById(@PathVariable Long id) {
+    public ResponseEntity<Activity> getActivityById(@PathVariable Long id) {
         return activityService.getActivityById(id)
                 .map(activity -> ResponseEntity.ok().body(activity))
                 .orElse(ResponseEntity.notFound().build());
@@ -34,7 +33,7 @@ public class ActivityController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateActivity(@PathVariable Long id, @RequestBody Activity activityDetails) {
+    public ResponseEntity<Activity> updateActivity(@PathVariable Long id, @RequestBody Activity activityDetails) {
         return activityService.getActivityById(id)
                 .map(activity -> {
                     activity.setName(activityDetails.getName());
@@ -50,7 +49,7 @@ public class ActivityController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteActivity(@PathVariable Long id) {
+    public ResponseEntity<?> deleteActivity(@PathVariable Long id) {
         return activityService.getActivityById(id)
                 .map(activity -> {
                     activityService.deleteActivity(id);
@@ -61,19 +60,19 @@ public class ActivityController {
 
     // Specialiserede endpoints
     @GetMapping("/for-age/{age}")
-    public List getActivitiesForAge(@PathVariable Integer age) {
+    public List<Activity> getActivitiesForAge(@PathVariable Integer age) {
         return activityService.getActivitiesForAge(age);
     }
 
     @GetMapping("/suitable")
-    public List getSuitableActivities(
+    public List<Activity> getSuitableActivities(
             @RequestParam Integer age,
             @RequestParam Integer participants) {
         return activityService.getSuitableActivities(age, participants);
     }
 
     @PostMapping("/init-data")
-    public ResponseEntity initializeTestData() {
+    public ResponseEntity<String> initializeTestData() {
         activityService.initializeTestData();
         return ResponseEntity.ok("Test data initialized");
     }

@@ -1,7 +1,6 @@
 package com.example.miniProjekt.entity;
 import jakarta.persistence.*;
 import java.util.List;
-
 @Entity
 @Table(name="activities")
 public class Activity {
@@ -28,8 +27,7 @@ public class Activity {
     private Boolean equipmentRequired=false;
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
-    private List reservations;
-
+    private List<Reservation> reservations;
 
     public Activity() {}
 
@@ -43,75 +41,31 @@ public class Activity {
         this.durationMinutes = durationMinutes;
     }
 
-    public Long getId() {
-        return id;
-    }
+    // Getters og Setters (samme som før)
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getName() {
-        return name;
-    }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public Integer getMinAge() { return minAge; }
+    public void setMinAge(Integer minAge) { this.minAge = minAge; }
 
-    public String getDescription() {
-        return description;
-    }
+    public Integer getMaxParticipants() { return maxParticipants; }
+    public void setMaxParticipants(Integer maxParticipants) { this.maxParticipants = maxParticipants; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public Integer getDurationMinutes() { return durationMinutes; }
+    public void setDurationMinutes(Integer durationMinutes) { this.durationMinutes = durationMinutes; }
 
-    public Integer getMinAge() {
-        return minAge;
-    }
+    public Double getPrice() { return price; }
+    public void setPrice(Double price) { this.price = price; }
 
-    public void setMinAge(Integer minAge) {
-        this.minAge = minAge;
-    }
+    public Boolean getEquipmentRequired() { return equipmentRequired; }
+    public void setEquipmentRequired(Boolean equipmentRequired) { this.equipmentRequired = equipmentRequired; }
 
-    public Integer getMaxParticipants() {
-        return maxParticipants;
-    }
-
-    public void setMaxParticipants(Integer maxParticipants) {
-        this.maxParticipants = maxParticipants;
-    }
-
-    public Integer getDurationMinutes() {
-        return durationMinutes;
-    }
-
-    public void setDurationMinutes(Integer durationMinutes) {
-        this.durationMinutes = durationMinutes;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Boolean getEquipmentRequired() {
-        return equipmentRequired;
-    }
-
-    public void setEquipmentRequired(Boolean equipmentRequired) {
-        this.equipmentRequired = equipmentRequired;
-    }
-
-    public List getReservations() {
-        return reservations;
-    }
-
-    public void setReservations(List reservations) {
-        this.reservations = reservations;
-    }
+    public List<Reservation> getReservations() { return reservations; }
+    public void setReservations(List<Reservation> reservations) { this.reservations = reservations; }
 }

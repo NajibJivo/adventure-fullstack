@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @RequestMapping("/api/reservations")
 @CrossOrigin(origins = "*")
@@ -18,12 +17,12 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @GetMapping
-    public List getAllReservations() {
+    public List<Reservation> getAllReservations() {
         return reservationService.getAllReservations();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getReservationById(@PathVariable Long id) {
+    public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
         return reservationService.getReservationById(id)
                 .map(reservation -> ResponseEntity.ok().body(reservation))
                 .orElse(ResponseEntity.notFound().build());
@@ -35,7 +34,7 @@ public class ReservationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateReservation(@PathVariable Long id, @RequestBody Reservation reservationDetails) {
+    public ResponseEntity<Reservation> updateReservation(@PathVariable Long id, @RequestBody Reservation reservationDetails) {
         return reservationService.getReservationById(id)
                 .map(reservation -> {
                     reservation.setCustomerName(reservationDetails.getCustomerName());
@@ -51,7 +50,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteReservation(@PathVariable Long id) {
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
         return reservationService.getReservationById(id)
                 .map(reservation -> {
                     reservationService.deleteReservation(id);
@@ -62,17 +61,17 @@ public class ReservationController {
 
     // Specialiserede endpoints
     @GetMapping("/activity/{activityId}")
-    public List getReservationsForActivity(@PathVariable Long activityId) {
+    public List<Reservation> getReservationsForActivity(@PathVariable Long activityId) {
         return reservationService.getReservationsForActivity(activityId);
     }
 
     @GetMapping("/type/{type}")
-    public List getReservationsByType(@PathVariable ReservationType type) {
+    public List<Reservation> getReservationsByType(@PathVariable ReservationType type) {
         return reservationService.getReservationsByType(type);
     }
 
     @GetMapping("/upcoming")
-    public List getUpcomingReservations() {
+    public List<Reservation> getUpcomingReservations() {
         return reservationService.getUpcomingReservations();
     }
 }
