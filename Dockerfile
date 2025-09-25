@@ -24,6 +24,8 @@ RUN ./mvnw clean package -DskipTests
 # Production stage
 FROM eclipse-temurin:17-jre
 
+# Install curl for health check
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -37,7 +39,7 @@ COPY --from=build /app/target/*.jar app.jar
 # Expose port
 EXPOSE 8080
 
-# Health check
+# Health check (nu med curl installeret)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
   CMD curl -f http://localhost:8080/api/activities || exit 1
 
