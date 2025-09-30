@@ -24,7 +24,7 @@ jobs:
 
       # 3. Cache Maven dependencies
       - name: Cache Maven packages
-        uses: actions/cache@0057852 # v4.1.2
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.1.2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
