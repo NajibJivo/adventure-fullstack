@@ -1,9 +1,9 @@
 package com.example.miniProjekt.Service;
 
 import com.example.miniProjekt.Repository.ReservationRepository;
-import com.example.miniProjekt.entity.Activity;
-import com.example.miniProjekt.entity.Reservation;
-import com.example.miniProjekt.entity.ReservationType;
+import com.example.miniProjekt.model.Activity;
+import com.example.miniProjekt.model.Reservation;
+import com.example.miniProjekt.model.ReservationType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)

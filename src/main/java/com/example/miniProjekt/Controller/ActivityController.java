@@ -1,79 +1,59 @@
 package com.example.miniProjekt.Controller;
 
-import com.example.miniProjekt.Service.ActivityService;
-import com.example.miniProjekt.entity.Activity;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import com.example.miniProjekt.Repository.ActivityRepository;
+import com.example.miniProjekt.model.Activity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/api/activities")
-@CrossOrigin(origins = "*")
+@RequestMapping("/activities") // Base URL for all activity-related endpoints
 public class ActivityController {
 
-    @Autowired
-    private ActivityService activityService;
+    private final ActivityRepository activityRepository;
 
+    public ActivityController(ActivityRepository activityRepository){
+        this.activityRepository = activityRepository;
+    }
+
+    /** READ ALL **/
     @GetMapping
-    public List<Activity> getAllActivities() {
-        return activityService.getAllActivities();
+    public List<Activity> getAllActivities(){
+        return activityRepository.findAll();
     }
 
+    /** READ BY ID **/
     @GetMapping("/{id}")
-    public ResponseEntity<Activity> getActivityById(@PathVariable Long id) {
-        return activityService.getActivityById(id)
-                .map(activity -> ResponseEntity.ok().body(activity))
-                .orElse(ResponseEntity.notFound().build());
+    public Optional<Activity> getActivityById(Long id) {
+        return activityRepository.findById(id);
     }
 
+    /** CREATE **/
     @PostMapping
-    public Activity createActivity(@RequestBody Activity activity) {
-        return activityService.saveActivity(activity);
+    public Activity createActivity(Activity activity){
+        return activityRepository.save(activity);
     }
 
+    /** UPDATE **/
     @PutMapping("/{id}")
-    public ResponseEntity<Activity> updateActivity(@PathVariable Long id, @RequestBody Activity activityDetails) {
-        return activityService.getActivityById(id)
+    public Activity updateActivity(@PathVariable Long id, @RequestBody Activity updatedActivity){
+        return activityRepository.findById(id)
                 .map(activity -> {
-                    activity.setName(activityDetails.getName());
-                    activity.setDescription(activityDetails.getDescription());
-                    activity.setMinAge(activityDetails.getMinAge());
-                    activity.setMaxParticipants(activityDetails.getMaxParticipants());
-                    activity.setDurationMinutes(activityDetails.getDurationMinutes());
-                    activity.setPrice(activityDetails.getPrice());
-                    activity.setEquipmentRequired(activityDetails.getEquipmentRequired());
-                    return ResponseEntity.ok(activityService.saveActivity(activity));
+                    activity.setName(updatedActivity.getName());
+                    activity.setDescription(updatedActivity.getDescription());
+                    activity.setPrice(updatedActivity.getPrice());
+                    activity.setDuration(updatedActivity.getDuration());
+                    activity.setMinAge(updatedActivity.getMinAge());
+                    activity.setMinHeight(updatedActivity.getMinHeight());
+                    activity.setAvailableFrom(updatedActivity.getAvailableFrom());
+                    activity.setAvailableTo(updatedActivity.getAvailableTo());
+                    return activityRepository.save(activity);
                 })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteActivity(@PathVariable Long id) {
-        return activityService.getActivityById(id)
-                .map(activity -> {
-                    activityService.deleteActivity(id);
-                    return ResponseEntity.ok().build();
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    // Specialiserede endpoints
-    @GetMapping("/for-age/{age}")
-    public List<Activity> getActivitiesForAge(@PathVariable Integer age) {
-        return activityService.getActivitiesForAge(age);
-    }
-
-    @GetMapping("/suitable")
-    public List<Activity> getSuitableActivities(
-            @RequestParam Integer age,
-            @RequestParam Integer participants) {
-        return activityService.getSuitableActivities(age, participants);
-    }
-
-    @PostMapping("/init-data")
-    public ResponseEntity<String> initializeTestData() {
-        activityService.initializeTestData();
-        return ResponseEntity.ok("Test data initialized");
+                .orElseGet(() -> { // If activity with the given ID doesn't exist, create a new one,
+                                   // lambda runs only if Optional is empty due to orElseGet
+                    updatedActivity.setId(id);
+                    return activityRepository.save(updatedActivity);
+                });
     }
 }

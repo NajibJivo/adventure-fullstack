@@ -1,8 +1,8 @@
 package com.example.miniProjekt.Controller;
 
 import com.example.miniProjekt.Service.ReservationService;
-import com.example.miniProjekt.entity.Reservation;
-import com.example.miniProjekt.entity.ReservationType;
+import com.example.miniProjekt.model.Reservation;
+import com.example.miniProjekt.model.ReservationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

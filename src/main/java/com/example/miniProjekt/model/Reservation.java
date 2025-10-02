@@ -1,4 +1,4 @@
-package com.example.miniProjekt.entity;
+package com.example.miniProjekt.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
