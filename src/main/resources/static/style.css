@@ -1,0 +1,224 @@
+/* TIVOLI INSPIRED COLOR PALETTE */
+:root {
+    /* Base colors from Tivoli website */
+    --cream-bg: #F5F1E8;
+    --cream-light: #FDFBF7;
+    --cream-dark: #E8E0D5;
+    --brown-text: #2D1810;
+    --brown-medium: #5C4332;
+    --gold-accent: #C9A961;
+    --white: #FFFFFF;
+}
+
+/* RESET & BASE STYLES */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    list-style: none;
+    border-radius: 0;
+    -webkit-tap-highlight-color: transparent;
+    background-color: transparent;
+    border: none;
+    text-align: inherit;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--cream-bg);
+    color: var(--brown-text);
+    line-height: 1.6;
+}
+
+/* TOP SEKTION - Transparent header like Tivoli */
+.header {
+    background-color: rgba(255, 255, 255, 0);
+    padding: 30px 40px;
+    border-bottom: 1px solid rgba(45, 24, 16, 0.1);
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    color: var(--brown-text);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+/* HOVEDINDHOLD */
+.container {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.page-title {
+    font-size: 2.5em;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 50px;
+    color: var(--brown-text);
+}
+
+/* AKTIVITETSKORT GRID */
+.activities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+/* AKTIVITETSKORT */
+.activity-card {
+    background-color: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(45, 24, 16, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(45, 24, 16, 0.1);
+}
+
+.activity-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(45, 24, 16, 0.15);
+}
+
+/* the frame for the images represnting certain activities */
+.activity-image {
+    width: 100%;    /* here is the width of the frame that can´t be exceeded by the image */
+    height: 250px;  /* here is the height of the frame that can´t be exceeded by the image */*/
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5em;
+    position: relative;
+    overflow: hidden; /* ensures that if any content inside the image frame that’s bigger than the div, it gets clipped */
+}
+
+/* Makes the image fill the container, keep its aspect ratio, and avoid stretching */
+.activity-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* keeps original aspect ratio for images, so it doesn’t stretch, exceeding parts are cropped */
+    display: block;    /* removes the tiny gap below the image gets cropped to keep aspect ratio.*/
+}
+
+/* Soft pastel colors inspired by Tivoli */
+.activity-image.gocart {
+    background: linear-gradient(135deg, #E8A87C 0%, #D4886F 100%);
+}
+
+.activity-image.minigolf {
+    background: linear-gradient(135deg, #9BBF8E 0%, #7FA872 100%);
+}
+
+.activity-image.paintball {
+    background: linear-gradient(135deg, #8BA3C7 0%, #6B8AB5 100%);
+}
+
+.activity-image.sumo {
+    background: linear-gradient(135deg, #E6B89C 0%, #D4A07A 100%);
+}
+
+.activity-content {
+    padding: 30px;
+}
+
+.activity-title {
+    font-size: 1.8em;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--brown-text);
+}
+
+.activity-description {
+    font-size: 1em;
+    line-height: 1.7;
+    margin-bottom: 20px;
+    color: var(--brown-medium);
+}
+
+.activity-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: var(--cream-light);
+    border-radius: 8px;
+    border: 1px solid rgba(45, 24, 16, 0.08);
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.95em;
+}
+
+.detail-label {
+    font-weight: 600;
+    margin-right: 8px;
+    color: var(--brown-text);
+}
+
+.detail-value {
+    color: var(--brown-medium);
+}
+
+.price-tag {
+    display: inline-block;
+    background-color: var(--brown-text);
+    color: var(--white);
+    padding: 14px 28px;
+    border-radius: 6px;
+    font-size: 1.2em;
+    font-weight: 600;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.price-tag:hover {
+    background-color: var(--brown-medium);
+}
+
+/* LOADING STATE */
+.loading {
+    text-align: center;
+    padding: 60px 0;
+    font-size: 1.3em;
+    color: var(--brown-text);
+    background-color: var(--white);
+    border-radius: 12px;
+    border: 2px dashed rgba(45, 24, 16, 0.2);
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.8em;
+    }
+    
+    .page-title {
+        font-size: 2em;
+    }
+    
+    .activities-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .activity-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .header {
+        padding: 15px 20px;
+    }
+    
+    .container {
+        margin: 20px auto;
+    }
+}

@@ -10,7 +10,9 @@ const activities = [
         minHeight: 150,
         availableFrom: "2024-10-01T10:00:00",
         availableTo: "2024-12-31T20:00:00",
-        emoji: "🏎️",
+
+        /* all image URL's are from unsplash.com or pixabay.com*/
+        imageUrl: "https://images.unsplash.com/photo-1652451991281-e637ec408bec?q=80&w=2233&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         colorClass: "gocart"
     },
     {
@@ -23,7 +25,7 @@ const activities = [
         minHeight: 0,
         availableFrom: "2024-10-01T10:00:00",
         availableTo: "2024-12-31T20:00:00",
-        emoji: "⛳",
+        imageUrl: "https://images.unsplash.com/photo-1730198439547-413dc40624bf?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         colorClass: "minigolf"
     },
     {
@@ -36,7 +38,7 @@ const activities = [
         minHeight: 0,
         availableFrom: "2024-10-01T10:00:00",
         availableTo: "2024-12-31T18:00:00",
-        emoji: "🎯",
+        imageUrl: "https://media.istockphoto.com/id/115702444/photo/paintball-player-under-gunfire.jpg?s=1024x1024&w=is&k=20&c=SNGKnB1zfOLCNbyu9ezKz0fGlLsmx1b8gfqRCaqLwbQ=",
         colorClass: "paintball"
     },
     {
@@ -49,7 +51,7 @@ const activities = [
         minHeight: 120,
         availableFrom: "2024-10-01T10:00:00",
         availableTo: "2024-12-31T20:00:00",
-        emoji: "🤼",
+        imageUrl: "https://thumbs.dreamstime.com/b/sumo-wrestlers-4836066.jpg",
         colorClass: "sumo"
     }
 ];
@@ -83,7 +85,7 @@ function createActivityCard(activity) {
     return `
         <div class="activity-card">
             <div class="activity-image ${activity.colorClass}">
-                ${activity.emoji}
+                <img src="${activity.imageUrl}" alt="${activity.name}" class="activity-img">
             </div>
             <div class="activity-content">
                 <h3 class="activity-title">${activity.name}</h3>
@@ -91,19 +93,19 @@ function createActivityCard(activity) {
                 
                 <div class="activity-details">
                     <div class="detail-item">
-                        <span class="detail-label">⏱️ Varighed:</span>
+                        <span class="detail-label">Varighed:</span>
                         <span class="detail-value">${activity.duration} min</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label">👤 Min. alder:</span>
+                        <span class="detail-label">Min. alder:</span>
                         <span class="detail-value">${activity.minAge} år</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label">📏 Min. højde:</span>
+                        <span class="detail-label">Min. højde:</span>
                         <span class="detail-value">${activity.minHeight > 0 ? activity.minHeight + ' cm' : 'Ingen krav'}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label">📅 Tilgængelig fra:</span>
+                        <span class="detail-label">Tilgængelig fra:</span>
                         <span class="detail-value">${formatDateTime(activity.availableFrom)}</span>
                     </div>
                 </div>
