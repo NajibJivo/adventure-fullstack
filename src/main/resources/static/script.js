@@ -38,7 +38,7 @@ const activities = [
         minHeight: 0,
         availableFrom: "2024-10-01T10:00:00",
         availableTo: "2024-12-31T18:00:00",
-        imageUrl: "https://media.istockphoto.com/id/115702444/photo/paintball-player-under-gunfire.jpg?s=1024x1024&w=is&k=20&c=SNGKnB1zfOLCNbyu9ezKz0fGlLsmx1b8gfqRCaqLwbQ=",
+        imageUrl: "https://paintballsports.co.uk/wp-content/uploads/2022/04/FF0924_2015_2_Bundesliga_Spieltag1-2-19-400x400.jpg",
         colorClass: "paintball"
     },
     {
