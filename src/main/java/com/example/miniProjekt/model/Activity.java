@@ -1,0 +1,113 @@
+package com.example.miniProjekt.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+public class Activity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //auto-generate primary key
+    private  Long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private int duration;
+    private int minAge;
+    private int minHeight;
+    private LocalDateTime availableFrom;
+    private LocalDateTime availableTo;
+
+    public Activity() {
+
+    }
+
+    public Activity(Long id, String name, String description, BigDecimal price, int duration, int minAge, int minHeight, LocalDateTime availableFrom, LocalDateTime availableTo) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+        this.minAge = minAge;
+        this.minHeight = minHeight;
+        this.availableFrom = availableFrom;
+        this.availableTo = availableTo;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getMinAge() {
+        return minAge;
+    }
+
+    public void setMinAge(int minAge) {
+        this.minAge = minAge;
+    }
+
+    public int getMinHeight() {
+        return minHeight;
+    }
+
+    public void setMinHeight(int minHeight) {
+        this.minHeight = minHeight;
+    }
+
+    public LocalDateTime getAvailableFrom() {
+        return availableFrom;
+    }
+
+    public void setAvailableFrom(LocalDateTime availableFrom) {
+        this.availableFrom = availableFrom;
+    }
+
+    public LocalDateTime getAvailableTo() {
+        return availableTo;
+    }
+
+    public void setAvailableTo(LocalDateTime availableTo) {
+        this.availableTo = availableTo;
+    }
+}

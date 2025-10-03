@@ -1,8 +1,8 @@
 package com.example.miniProjekt.Service;
 
 import com.example.miniProjekt.Repository.ReservationRepository;
-import com.example.miniProjekt.entity.Reservation;
-import com.example.miniProjekt.entity.ReservationType;
+import com.example.miniProjekt.model.Reservation;
+import com.example.miniProjekt.model.ReservationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

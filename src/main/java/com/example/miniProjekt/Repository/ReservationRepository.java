@@ -1,7 +1,7 @@
 package com.example.miniProjekt.Repository;
 
-import com.example.miniProjekt.entity.Reservation;
-import com.example.miniProjekt.entity.ReservationType;
+import com.example.miniProjekt.model.Reservation;
+import com.example.miniProjekt.model.ReservationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
