@@ -1,6 +1,6 @@
 package com.example.miniProjekt.Repository;
 
-import com.example.miniProjekt.entity.Activity;
+import com.example.miniProjekt.Model.Activity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

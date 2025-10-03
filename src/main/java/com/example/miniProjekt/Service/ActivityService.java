@@ -1,7 +1,7 @@
 package com.example.miniProjekt.Service;
 
 import com.example.miniProjekt.Repository.ActivityRepository;
-import com.example.miniProjekt.entity.Activity;
+import com.example.miniProjekt.Model.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

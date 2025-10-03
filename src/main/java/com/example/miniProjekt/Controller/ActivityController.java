@@ -1,7 +1,7 @@
 package com.example.miniProjekt.Controller;
 
 import com.example.miniProjekt.Service.ActivityService;
-import com.example.miniProjekt.entity.Activity;
+import com.example.miniProjekt.Model.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

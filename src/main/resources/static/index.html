@@ -16,7 +16,7 @@
     <div class="tabs">
         <button class="tab-btn active" onclick="showTab('activities')">Aktiviteter</button>
         <button class="tab-btn" onclick="showTab('booking')">Book Aktivitet</button>
-        <button class="tab-btn" onclick="showTab('reservations')">Reservationer</button>
+        <button class="tab-btn" onclick="showTab('bookings')">Reservationer</button>
     </div>
 
     <!-- Activities Tab -->
@@ -79,13 +79,13 @@
             </div>
 
             <div class="form-group">
-                <label for="reservation-datetime">Tidspunkt:</label>
-                <input type="datetime-local" id="reservation-datetime" required>
+                <label for="booking-datetime">Tidspunkt:</label>
+                <input type="datetime-local" id="booking-datetime" required>
             </div>
 
             <div class="form-group">
-                <label for="reservation-type">Type:</label>
-                <select id="reservation-type">
+                <label for="booking-type">Type:</label>
+                <select id="booking-type">
                     <option value="PRIVATE">Privat</option>
                     <option value="CORPORATE">Firmaaftale</option>
                 </select>
@@ -101,7 +101,7 @@
     </div>
 
     <!-- Reservations Tab -->
-    <div id="reservations-tab" class="tab-content">
+    <div id="bookings-tab" class="tab-content">
         <h2>Reservationer</h2>
 
         <div class="filter-section">
@@ -111,7 +111,7 @@
             <button class="btn" onclick="loadReservations('corporate')">Firmaaftaler</button>
         </div>
 
-        <div id="reservations-list" class="loading">
+        <div id="bookings-list" class="loading">
             Indlæser reservationer
         </div>
     </div>
