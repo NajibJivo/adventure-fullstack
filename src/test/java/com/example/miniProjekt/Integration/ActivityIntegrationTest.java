@@ -1,6 +1,6 @@
 package com.example.miniProjekt.Integration;
 
-import com.example.miniProjekt.entity.Activity;
+import com.example.miniProjekt.Model.Activity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
