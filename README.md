@@ -30,6 +30,50 @@ Vi arbejder agilt efter Scrum/XP-principper.
   - Use case diagrammer (user stories)
   - ER-diagram (datamodel: aktiviteter, kunder, reservationer, udstyr)
   - UI wireframes (bookingflow, admin-dashboard)
+  
+
+## 🐳 Docker Setup
+
+### Quick Start
+```bash
+# Start systemet
+docker compose up -d --build
+
+# Initialiser test data
+curl -X POST http://localhost:8080/api/activities/init-data
+
+# Stop systemet
+docker compose down
+```
+
+### Adgang
+- **Frontend & API:** http://localhost:8080
+- **Database Admin:** http://localhost:8081
+  - Server: `mysql`
+  - Username: `appuser`
+  - Password: `apppassword`
+  - Database: `adventurepark`
+
+### Nyttige Kommandoer
+```bash
+# Se logs
+docker compose logs -f app
+
+# Tjek status
+docker compose ps
+
+# Restart efter kodeændringer
+docker compose restart app
+
+# Fuld reset (sletter data!)
+docker compose down -v
+```
+
+### Krav
+- Docker Desktop installeret
+- Port 8080 og 8081 skal være ledige
+
+**Fuld Docker dokumentation findes i projektets rapport (User Story 2).**
 
 # 📝 User Stories (eksempler)
 - Som kunde vil jeg kunne reservere en aktivitet online, så jeg ikke skal ringe.
