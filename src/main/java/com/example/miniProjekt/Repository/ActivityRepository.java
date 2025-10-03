@@ -1,4 +1,4 @@
-package com.example.miniProjekt.Repository;
+package com.example.miniProjekt.repository;
 
 import com.example.miniProjekt.model.Activity;
 import org.springframework.data.jpa.repository.JpaRepository;

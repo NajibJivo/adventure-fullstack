@@ -1,7 +1,8 @@
-package com.example.miniProjekt.Controller;
+package com.example.miniProjekt.controller;
 
-import com.example.miniProjekt.Repository.ActivityRepository;
 import com.example.miniProjekt.model.Activity;
+import com.example.miniProjekt.repository.ActivityRepository;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,31 +14,31 @@ public class ActivityController {
 
     private final ActivityRepository activityRepository;
 
-    public ActivityController(ActivityRepository activityRepository){
+    public ActivityController(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
 
     /** READ ALL **/
     @GetMapping
-    public List<Activity> getAllActivities(){
+    public List<Activity> getAllActivities() {
         return activityRepository.findAll();
     }
 
     /** READ BY ID **/
     @GetMapping("/{id}")
-    public Optional<Activity> getActivityById(Long id) {
+    public Optional<Activity> getActivityById(@PathVariable Long id) {
         return activityRepository.findById(id);
     }
 
     /** CREATE **/
     @PostMapping
-    public Activity createActivity(Activity activity){
+    public Activity createActivity(@RequestBody Activity activity) {
         return activityRepository.save(activity);
     }
 
     /** UPDATE **/
     @PutMapping("/{id}")
-    public Activity updateActivity(@PathVariable Long id, @RequestBody Activity updatedActivity){
+    public Activity updateActivity(@PathVariable Long id, @RequestBody Activity updatedActivity) {
         return activityRepository.findById(id)
                 .map(activity -> {
                     activity.setName(updatedActivity.getName());

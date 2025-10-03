@@ -1,9 +1,11 @@
 package com.example.miniProjekt.Service;
 
-import com.example.miniProjekt.Repository.ReservationRepository;
 import com.example.miniProjekt.model.Activity;
 import com.example.miniProjekt.model.Reservation;
 import com.example.miniProjekt.model.ReservationType;
+import com.example.miniProjekt.repository.ReservationRepository;
+import com.example.miniProjekt.service.ReservationService;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
