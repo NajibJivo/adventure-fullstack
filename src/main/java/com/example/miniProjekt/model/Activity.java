@@ -22,12 +22,14 @@ public class Activity {
     private int minHeight;
     private LocalDateTime availableFrom;
     private LocalDateTime availableTo;
+    private String imageUrl;
 
     public Activity() {
 
     }
 
-    public Activity(Long id, String name, String description, BigDecimal price, int duration, int minAge, int minHeight, LocalDateTime availableFrom, LocalDateTime availableTo) {
+    public Activity(Long id, String name, String description, BigDecimal price, int duration, int minAge,
+                    int minHeight, LocalDateTime availableFrom, LocalDateTime availableTo,  String imageUrl) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -37,6 +39,7 @@ public class Activity {
         this.minHeight = minHeight;
         this.availableFrom = availableFrom;
         this.availableTo = availableTo;
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -109,5 +112,13 @@ public class Activity {
 
     public void setAvailableTo(LocalDateTime availableTo) {
         this.availableTo = availableTo;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
