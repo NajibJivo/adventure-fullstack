@@ -222,3 +222,139 @@ body {
         margin: 20px auto;
     }
 }
+
+/* Knap – neutral, moderne */
+.btn-edit{
+  display:inline-block;
+  padding:0.55rem 0.9rem;
+  border-radius:10px;
+  border:1px solid #d0d7de;
+  background:#f6f8fa;
+  font-weight:600;
+  cursor:pointer;
+  transition:transform .06s ease, background .15s ease, box-shadow .15s ease;
+  margin-top:.75rem;
+}
+
+.btn-edit:hover{
+  background:#eef1f5;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+}
+
+.btn-edit:active{
+  transform:translateY(1px);
+}
+
+/* Lidt layout så knappen ikke “hænger” */
+.activity-content{
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+}
+
+/* Admin-panel (formularen øverst) */
+.admin-panel{
+  max-width: 980px;
+  margin: 1.5rem auto;
+  padding: 1rem 1.25rem;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+}
+
+.admin-panel h2{
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+}
+
+/* Formularlayout: læsbar, responsiv */
+#activity-form{
+  display: grid;
+  grid-template-columns: 1fr 1fr auto auto; /* Navn | Pris | Gem | Annuller */
+  gap: .9rem 1rem;
+  align-items: end;
+}
+
+
+#activity-form label{
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  font-size: .95rem;
+  gap: .35rem;
+}
+
+/* Inputs */
+#activity-form input[type="text"],
+#activity-form input[type="number"]{
+  width: 100%;
+  box-sizing: border-box;
+  padding: .6rem .7rem;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  background: #f8fafc;
+  outline: none;
+}
+#activity-form input:focus{
+  border-color: #b4c0cc;
+  box-shadow: 0 0 0 3px rgba(60, 120, 200, .12);
+}
+
+/* Gem/Opdater-knappen */
+#activity-form button[type="submit"]{
+  padding: .7rem 1rem;
+  border: 1px solid #1f2937;
+  background: #1f2937;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .06s ease, box-shadow .15s ease, opacity .15s ease;
+}
+#activity-form button[type="submit"]:hover{
+  box-shadow: 0 6px 16px rgba(0,0,0,.15);
+}
+#activity-form button[type="submit"]:active{
+  transform: translateY(1px);
+}
+
+.btn-secondary{
+  padding:.7rem 1rem;
+  border:1px solid #d0d7de;
+  background:#f6f8fa;
+  color:#111827;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  margin-left:.5rem;
+  transition:transform .06s ease, background .15s ease, box-shadow .15s ease;
+}
+.btn-secondary:hover{ background:#eef1f5; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+.btn-secondary:active{ transform:translateY(1px); }
+
+/* Ens størrelse med submit */
+#activity-form button[type="submit"],
+#btn-cancel{
+  height: 40px;
+  padding: .7rem 1rem;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/* Annuller – light red */
+#btn-cancel{
+  background: #FDE8E8;        /* lys rød baggrund */
+  border: 1px solid #F5B5B5;  /* lys rød kant */
+  color: #7F1D1D;             /* mørk rød tekst */
+  cursor: pointer;
+  transition: transform .06s ease, background .15s ease, box-shadow .15s ease;
+  margin-left: .5rem;         /* lille afstand fra Gem */
+}
+#btn-cancel:hover{
+  background: #FACCCC;        /* lidt mørkere ved hover */
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+#btn-cancel:active{ transform: translateY(1px); }
+
+

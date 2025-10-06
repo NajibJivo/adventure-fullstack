@@ -1,4 +1,4 @@
-package com.example.miniProjekt.Repository;
+package com.example.miniProjekt.repository;
 
 import com.example.miniProjekt.model.Reservation;
 import com.example.miniProjekt.model.ReservationType;
