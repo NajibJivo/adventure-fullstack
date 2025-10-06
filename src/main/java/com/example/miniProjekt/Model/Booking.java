@@ -1,11 +1,13 @@
-package com.example.miniProjekt.entity;
+package com.example.miniProjekt.Model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "reservations")
-public class Reservation {
+public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,13 +40,29 @@ public class Reservation {
     @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
 
+    @ManyToMany
+    @JoinTable(
+            name = "reservation_employees",
+            joinColumns = @JoinColumn(name = "reservation_id"),
+            inverseJoinColumns = @JoinColumn(name = "employee_id")
+    )
+    private Set<Employee> employees = new HashSet<>();
+
+    public Set<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Set<Employee> employees) {
+        this.employees = employees;
+    }
+
     // Constructors
-    public Reservation() {
+    public Booking() {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Reservation(String customerName, String customerPhone, String customerEmail,
-                       Integer participantCount, LocalDateTime reservationTime, Activity activity) {
+    public Booking(String customerName, String customerPhone, String customerEmail,
+                   Integer participantCount, LocalDateTime reservationTime, Activity activity) {
         this();
         this.customerName = customerName;
         this.customerPhone = customerPhone;

@@ -1,4 +1,4 @@
-package com.example.miniProjekt.entity;
+package com.example.miniProjekt.Model;
 
 public enum ReservationType {
     PRIVATE,//privat person

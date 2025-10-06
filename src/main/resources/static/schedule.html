@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Vagtplan – Admin</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <h1>Vagtplan – Administration</h1>
+    <button id="newReservationBtn">+ Ny booking</button>
+</header>
+
+<section id="schedule-section">
+    <table id="schedule-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Kundenavn</th>
+            <th>Telefon</th>
+            <th>Email</th>
+            <th>Deltagere</th>
+            <th>Aktivitet</th>
+            <th>Tidspunkt</th>
+            <th>Type</th>
+            <th>Medarbejdere</th>
+            <th>Noter</th>
+            <th>Handlinger</th>
+        </tr>
+        </thead>
+        <tbody id="schedule-body">
+        <!-- Dynamisk indhold -->
+        </tbody>
+    </table>
+</section>
+
+<!-- Formular til redigering -->
+<section id="edit-form" style="display:none;">
+    <h2>Rediger booking</h2>
+    <form id="updateForm">
+        <input type="hidden" id="reservationId">
+        <label>Kundenavn:</label>
+        <input type="text" id="customerName" required><br>
+
+        <label>Telefon:</label>
+        <input type="text" id="customerPhone"><br>
+
+        <label>Email:</label>
+        <input type="email" id="customerEmail"><br>
+
+        <label>Deltagere:</label>
+        <input type="number" id="participantCount" min="1" required><br>
+
+        <label>Dato & Tid:</label>
+        <input type="datetime-local" id="reservationTime" required><br>
+
+        <label>Type:</label>
+        <input type="text" id="type"><br>
+
+        <label>Noter:</label>
+        <textarea id="notes"></textarea><br>
+
+        <button type="submit">Gem ændringer</button>
+        <button type="button" onclick="cancelEdit()">Annuller</button>
+    </form>
+</section>
+
+<!-- Formular til oprettelse -->
+<section id="create-form" style="display:none;">
+    <h2>Opret ny booking</h2>
+    <form id="createForm">
+        <label>Kundenavn:</label>
+        <input type="text" id="newCustomerName" required><br>
+
+        <label>Telefon:</label>
+        <input type="text" id="newCustomerPhone"><br>
+
+        <label>Email:</label>
+        <input type="email" id="newCustomerEmail"><br>
+
+        <label>Deltagere:</label>
+        <input type="number" id="newParticipantCount" min="1" required><br>
+
+        <label>Dato & Tid:</label>
+        <input type="datetime-local" id="newReservationTime" required><br>
+
+        <label>Type:</label>
+        <input type="text" id="newType"><br>
+
+        <label>Aktivitet ID:</label>
+        <input type="number" id="newActivityId" required><br>
+
+        <label>Noter:</label>
+        <textarea id="newNotes"></textarea><br>
+
+        <button type="submit">Opret</button>
+        <button type="button" onclick="cancelCreate()">Annuller</button>
+    </form>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>

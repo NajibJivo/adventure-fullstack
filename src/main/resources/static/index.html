@@ -16,7 +16,8 @@
     <div class="tabs">
         <button class="tab-btn active" onclick="showTab('activities')">Aktiviteter</button>
         <button class="tab-btn" onclick="showTab('booking')">Book Aktivitet</button>
-        <button class="tab-btn" onclick="showTab('reservations')">Reservationer</button>
+        <button class="tab-btn" onclick="showTab('bookings')">Reservationer</button>
+        <button class="tab-btn" onclick="showTab('schedule')">Vagtplan</button>
     </div>
 
     <!-- Activities Tab -->
@@ -79,13 +80,13 @@
             </div>
 
             <div class="form-group">
-                <label for="reservation-datetime">Tidspunkt:</label>
-                <input type="datetime-local" id="reservation-datetime" required>
+                <label for="booking-datetime">Tidspunkt:</label>
+                <input type="datetime-local" id="booking-datetime" required>
             </div>
 
             <div class="form-group">
-                <label for="reservation-type">Type:</label>
-                <select id="reservation-type">
+                <label for="booking-type">Type:</label>
+                <select id="booking-type">
                     <option value="PRIVATE">Privat</option>
                     <option value="CORPORATE">Firmaaftale</option>
                 </select>
@@ -93,7 +94,6 @@
 
             <div class="form-group">
                 <label for="notes">Noter:</label>
-                <textarea id="notes" rows="3"></textarea>
             </div>
 
             <button type="submit" class="btn btn-success">Opret Reservation</button>
@@ -101,7 +101,7 @@
     </div>
 
     <!-- Reservations Tab -->
-    <div id="reservations-tab" class="tab-content">
+    <div id="bookings-tab" class="tab-content">
         <h2>Reservationer</h2>
 
         <div class="filter-section">
@@ -111,9 +111,78 @@
             <button class="btn" onclick="loadReservations('corporate')">Firmaaftaler</button>
         </div>
 
-        <div id="reservations-list" class="loading">
+        <div id="bookings-list" class="loading">
             Indlæser reservationer
         </div>
+    </div>
+</div>
+
+<!-- Schedule Tab -->
+<div id="schedule-tab" class="tab-content">
+    <h2>Vagtplan</h2>
+
+    <div class="filter-section">
+        <button id="newReservationBtn" class="btn btn-success">Opret ny booking</button>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Kunde</th>
+            <th>Telefon</th>
+            <th>Email</th>
+            <th>Deltagere</th>
+            <th>Aktivitet</th>
+            <th>Tidspunkt</th>
+            <th>Type</th>
+            <th>Ansatte</th>
+            <th>Noter</th>
+            <th>Handlinger</th>
+        </tr>
+        </thead>
+        <tbody id="schedule-body">
+        <!-- Indhold hentes dynamisk fra script.js -->
+        </tbody>
+    </table>
+
+    <!-- Skjulte formularer -->
+    <div id="create-form" style="display: none;">
+        <h3>Opret ny booking</h3>
+        <form id="createForm">
+            <input type="text" id="newCustomerName" placeholder="Kundens navn" required>
+            <input type="text" id="newCustomerPhone" placeholder="Telefon">
+            <input type="email" id="newCustomerEmail" placeholder="Email">
+            <input type="number" id="newParticipantCount" placeholder="Antal deltagere" required>
+            <input type="datetime-local" id="newReservationTime" required>
+            <input type="number" id="newActivityId" placeholder="Aktivitets-ID" required>
+            <select id="newType">
+                <option value="PRIVATE">Privat</option>
+                <option value="CORPORATE">Firmaaftale</option>
+            </select>
+            <textarea id="newNotes" placeholder="Noter"></textarea>
+            <button type="submit" class="btn btn-success">Opret</button>
+            <button type="button" class="btn" onclick="cancelCreate()">Annuller</button>
+        </form>
+    </div>
+
+    <div id="edit-form" style="display: none;">
+        <h3>Rediger booking</h3>
+        <form id="updateForm">
+            <input type="hidden" id="reservationId">
+            <input type="text" id="customerName" placeholder="Navn" required>
+            <input type="text" id="customerPhone" placeholder="Telefon">
+            <input type="email" id="customerEmail" placeholder="Email">
+            <input type="number" id="participantCount" placeholder="Antal deltagere" required>
+            <input type="datetime-local" id="reservationTime" required>
+            <select id="type">
+                <option value="PRIVATE">Privat</option>
+                <option value="CORPORATE">Firmaaftale</option>
+            </select>
+            <textarea id="notes" placeholder="Noter"></textarea>
+            <button type="submit" class="btn btn-success">Gem ændringer</button>
+            <button type="button" class="btn" onclick="cancelEdit()">Annuller</button>
+        </form>
     </div>
 </div>
 

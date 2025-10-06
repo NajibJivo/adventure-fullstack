@@ -1,4 +1,4 @@
-package com.example.miniProjekt.entity;
+package com.example.miniProjekt.Model;
 import jakarta.persistence.*;
 import java.util.List;
 @Entity
@@ -27,7 +27,7 @@ public class Activity {
     private Boolean equipmentRequired=false;
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
-    private List<Reservation> reservations;
+    private List<Booking> bookings;
 
     public Activity() {}
 
@@ -66,6 +66,6 @@ public class Activity {
     public Boolean getEquipmentRequired() { return equipmentRequired; }
     public void setEquipmentRequired(Boolean equipmentRequired) { this.equipmentRequired = equipmentRequired; }
 
-    public List<Reservation> getReservations() { return reservations; }
-    public void setReservations(List<Reservation> reservations) { this.reservations = reservations; }
+    public List<Booking> getReservations() { return bookings; }
+    public void setReservations(List<Booking> bookings) { this.bookings = bookings; }
 }

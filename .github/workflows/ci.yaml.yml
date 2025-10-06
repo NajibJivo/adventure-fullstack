@@ -1,0 +1,43 @@
+name: CI - Compile & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Tjek koden ud
+      - name: Checkout code
+        uses: actions/checkout@4
+
+      # 2. Opsæt JDK 17
+      - name: Set up JDK 17
+        uses: actions/setup-java@4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # 3. Cache Maven dependencies
+      - name: Cache Maven packages
+        uses: actions/cache@4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2
+      # 4. Gør mvnw executable
+      - name: Make mvnw executable
+        run: chmod +x ./mvnw
+
+      # 5. Compile koden
+      - name: Compile code
+        run: ./mvnw clean compile
+
+      # 6. Kør tests
+      - name: Run tests
+        run: ./mvnw test

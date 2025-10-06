@@ -349,3 +349,131 @@ function setMinDateTime() {
         console.log('Set min datetime to:', minDateTime);
     }
 }
+
+// Schedule management functionality
+document.addEventListener("DOMContentLoaded", () => {
+    loadSchedule();
+    document.getElementById("newReservationBtn").addEventListener("click", showCreateForm);
+    document.getElementById("createForm").addEventListener("submit", createReservation);
+});
+
+function loadSchedule() {
+    fetch("/api/reservations")
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById("schedule-body");
+            tbody.innerHTML = "";
+
+            data.forEach(r => {
+                const employees = r.employees?.map(e => e.name).join(", ") || "-";
+                const activityName = r.activity ? r.activity.name : `(id: ${r.activity?.id})`;
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${r.id}</td>
+                    <td>${r.customerName}</td>
+                    <td>${r.customerPhone || ""}</td>
+                    <td>${r.customerEmail || ""}</td>
+                    <td>${r.participantCount}</td>
+                    <td>${activityName}</td>
+                    <td>${r.reservationTime ? r.reservationTime.replace("T", " ") : ""}</td>
+                    <td>${r.type}</td>
+                    <td>${employees}</td>
+                    <td>${r.notes || ""}</td>
+                    <td>
+                        <button onclick="editReservation(${r.id})">Rediger</button>
+                        <button onclick="deleteReservation(${r.id})">Slet</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+}
+
+// ---------- Opret ny reservation ----------
+function showCreateForm() {
+    document.getElementById("create-form").style.display = "block";
+}
+
+function cancelCreate() {
+    document.getElementById("create-form").style.display = "none";
+}
+
+function createReservation(e) {
+    e.preventDefault();
+
+    const newReservation = {
+        customerName: document.getElementById("newCustomerName").value,
+        customerPhone: document.getElementById("newCustomerPhone").value,
+        customerEmail: document.getElementById("newCustomerEmail").value,
+        participantCount: parseInt(document.getElementById("newParticipantCount").value),
+        reservationTime: document.getElementById("newReservationTime").value,
+        type: document.getElementById("newType").value || "PRIVATE",
+        notes: document.getElementById("newNotes").value,
+        activity: { id: parseInt(document.getElementById("newActivityId").value) }
+    };
+
+    fetch("/api/reservations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReservation)
+    })
+        .then(res => {
+            if (!res.ok) throw new Error("Fejl ved oprettelse");
+            loadSchedule();
+            cancelCreate();
+            e.target.reset();
+        })
+        .catch(err => console.error(err));
+}
+
+// ---------- Rediger / Slet eksisterende ----------
+function editReservation(id) {
+    fetch(`/api/reservations/${id}`)
+        .then(res => res.json())
+        .then(r => {
+            document.getElementById("edit-form").style.display = "block";
+            document.getElementById("reservationId").value = r.id;
+            document.getElementById("customerName").value = r.customerName;
+            document.getElementById("customerPhone").value = r.customerPhone || "";
+            document.getElementById("customerEmail").value = r.customerEmail || "";
+            document.getElementById("participantCount").value = r.participantCount;
+            document.getElementById("reservationTime").value = r.reservationTime ? r.reservationTime.substring(0, 16) : "";
+            document.getElementById("type").value = r.type || "";
+            document.getElementById("notes").value = r.notes || "";
+        });
+}
+
+document.getElementById("updateForm").addEventListener("submit", e => {
+    e.preventDefault();
+
+    const id = document.getElementById("reservationId").value;
+    const updated = {
+        customerName: document.getElementById("customerName").value,
+        customerPhone: document.getElementById("customerPhone").value,
+        customerEmail: document.getElementById("customerEmail").value,
+        participantCount: parseInt(document.getElementById("participantCount").value),
+        reservationTime: document.getElementById("reservationTime").value,
+        type: document.getElementById("type").value,
+        notes: document.getElementById("notes").value
+    };
+
+    fetch(`/api/reservations/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated)
+    }).then(() => {
+        loadSchedule();
+        cancelEdit();
+    });
+});
+
+function deleteReservation(id) {
+    if (!confirm("Er du sikker på, at du vil slette denne reservation?")) return;
+    fetch(`/api/reservations/${id}`, { method: "DELETE" })
+        .then(() => loadSchedule());
+}
+
+function cancelEdit() {
+    document.getElementById("edit-form").style.display = "none";
+}

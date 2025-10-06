@@ -295,3 +295,70 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
+
+/* Ekstra styling til administrationspanelet */
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f5f6f7;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 95%;
+    margin: auto;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+button {
+    margin: 2px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#edit-form {
+    width: 400px;
+    margin: 20px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+#edit-form label {
+    display: block;
+    margin-top: 10px;
+}
+
+#edit-form input, #edit-form textarea {
+    width: 100%;
+    padding: 6px;
+    margin-top: 4px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
