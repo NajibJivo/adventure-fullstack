@@ -1,9 +1,10 @@
 package com.example.miniProjekt.service;
 
+import com.example.miniProjekt.Service.ReservationService;
 import com.example.miniProjekt.model.Activity;
 import com.example.miniProjekt.model.Reservation;
 import com.example.miniProjekt.model.ReservationType;
-import com.example.miniProjekt.repository.ReservationRepository;
+import com.example.miniProjekt.Repository.ReservationRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ class ReservationServiceTest {
 
     @BeforeEach
     void setUp() {
-        testActivity = new Activity("Test Activity", "Description", 10, 5, 30, 100.0, false);
+        testActivity = new Activity("Test Activity", "Description", 10, 5, 30, 100.0);
         testActivity.setId(1L);
 
         testReservation = new Reservation("John Doe", "12345678", "john@example.com",

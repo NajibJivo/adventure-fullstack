@@ -41,6 +41,16 @@ public class Activity {
         this.availableTo = availableTo;
         this.imageUrl = imageUrl;
     }
+// ny constructor udelukkende til test
+    public Activity(String name, String description, int minAge, int minHeight,
+                    int duration, double price) {
+        this.name = name;
+        this.description = description;
+        this.minAge = minAge;
+        this.minHeight = minHeight;
+        this.duration = duration;
+        this.price = BigDecimal.valueOf(price);
+    }
 
     public Long getId() {
         return id;

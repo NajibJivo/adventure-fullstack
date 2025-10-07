@@ -1,6 +1,7 @@
 package com.example.miniProjekt.controller;
+import com.example.miniProjekt.Controller.ActivityController;
 import com.example.miniProjekt.model.Activity;
-import com.example.miniProjekt.repository.ActivityRepository;
+import com.example.miniProjekt.Repository.ActivityRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,8 +149,7 @@ class ActivityControllerTest {
         when(activityRepository.findById(missingId)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/activities/{id}", missingId))
-                .andExpect(status().isOk())
-                .andExpect(content().string("")); // tom body
+                .andExpect(status().isNotFound());  // ← Kun tjek HTTP status, ikke body
     }
 
     // 6) GET / -> 200 + liste

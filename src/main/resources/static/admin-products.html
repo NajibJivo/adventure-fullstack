@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <!-- UTF-8 sikrer at danske bogstaver (æ, ø, å) vises korrekt -->
+    <meta charset="UTF-8">
+    <!-- Gør siden responsive på mobile enheder -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titel der vises i browser-fanen -->
+    <title>Admin - Produkter | AdventureXP</title>
+    <!-- Linker til CSS-filen for styling -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- Header sektion med navigation -->
+<header class="header">
+    <!-- Hovedoverskrift -->
+    <h1>AdventureXP - Admin</h1>
+    <!-- Navigation menu med links -->
+    <nav class="admin-nav">
+        <!-- Link til aktiviteter-siden -->
+        <a href="index.html">Aktiviteter</a>
+        <!-- Link til produkt-siden (current page) - class="active" giver visuel indikation -->
+        <a href="admin-products.html" class="active">Produkter</a>
+    </nav>
+</header>
+
+<!-- Hovedindhold container -->
+<div class="container">
+    <!-- Header med titel og tilføj-knap -->
+    <div class="admin-header">
+        <!-- Sidetitel -->
+        <h2 class="page-title">Produktadministration</h2>
+        <!-- Knap der åbner formular til at tilføje nyt produkt -->
+        <!-- onclick kalder JavaScript-funktionen showAddProductForm() -->
+        <button class="btn btn-primary" onclick="showAddProductForm()">+ Tilføj Produkt</button>
+    </div>
+
+    <!-- Filter sektion - knapper til at filtrere produkter efter kategori -->
+    <div class="filter-section">
+        <!-- Filter: Vis alle produkter - class="active" betyder den er valgt som standard -->
+        <button class="filter-btn active" onclick="filterProducts('ALL')">Alle</button>
+        <!-- Filter: Vis kun T-shirts -->
+        <button class="filter-btn" onclick="filterProducts('T_SHIRT')">T-shirts</button>
+        <!-- Filter: Vis kun slik -->
+        <button class="filter-btn" onclick="filterProducts('SNACK')">Slik</button>
+        <!-- Filter: Vis kun sodavand -->
+        <button class="filter-btn" onclick="filterProducts('SODA')">Sodavand</button>
+    </div>
+
+    <!-- Container hvor produkter vises dynamisk -->
+    <!-- id="products-container" bruges af JavaScript til at indsætte produkt-HTML -->
+    <div id="products-container" class="products-grid">
+        <!-- Standard loading-besked - erstattes af JavaScript når produkter loader -->
+        <div class="loading">Indlæser produkter...</div>
+    </div>
+</div>
+
+<!-- Modal popup til at tilføje/redigere produkt -->
+<!-- display: none i CSS - bliver synlig når man klikker "Tilføj Produkt" -->
+<div id="product-modal" class="modal">
+    <!-- Modal indhold container -->
+    <div class="modal-content">
+        <!-- Luk-knap (×-symbol) -->
+        <!-- onclick="closeModal()" lukker popup'en -->
+        <span class="close" onclick="closeModal()">&times;</span>
+
+        <!-- Modal titel - ændres til "Tilføj Produkt" eller "Rediger Produkt" -->
+        <h3 id="modal-title">Tilføj Produkt</h3>
+
+        <!-- Formular til produkt-data -->
+        <!-- id="product-form" bruges af JavaScript til at lytte efter submit -->
+        <form id="product-form">
+            <!-- Skjult felt til at gemme produkt-ID ved redigering -->
+            <!-- type="hidden" betyder feltet ikke vises på siden -->
+            <!-- Tomt ved nyt produkt, indeholder ID ved redigering -->
+            <input type="hidden" id="product-id">
+
+            <!-- Produkt navn felt -->
+            <label>Navn:</label>
+            <!-- id bruges af JavaScript til at hente værdien -->
+            <!-- required betyder feltet skal udfyldes før submit -->
+            <input type="text" id="product-name" required>
+
+            <!-- Beskrivelse felt -->
+            <label>Beskrivelse:</label>
+            <!-- textarea tillader multi-line tekst -->
+            <!-- rows="3" gør feltet 3 linjer højt -->
+            <textarea id="product-description" rows="3"></textarea>
+
+            <!-- Pris felt -->
+            <label>Pris (DKK):</label>
+            <!-- type="number" tillader kun tal -->
+            <!-- step="0.01" tillader decimaler (fx 149.99) -->
+            <input type="number" id="product-price" step="0.01" required>
+
+            <!-- Kategori dropdown -->
+            <label>Kategori:</label>
+            <!-- select laver en dropdown menu -->
+            <select id="product-category" required>
+                <!-- option value sendes til backend, tekst vises til bruger -->
+                <option value="T_SHIRT">T-shirt</option>
+                <option value="SNACK">Slik</option>
+                <option value="SODA">Sodavand</option>
+            </select>
+
+            <!-- Lagerbeholdning -->
+            <label>Lagerbeholdning:</label>
+            <!-- type="number" uden step tillader kun hele tal -->
+            <input type="number" id="product-stock" required>
+
+            <!-- Størrelse (kun relevant for T-shirts) -->
+            <label>Størrelse (kun T-shirts):</label>
+            <!-- placeholder viser eksempel-tekst når feltet er tomt -->
+            <!-- Ikke required - kun udfyldes for T-shirts -->
+            <input type="text" id="product-size" placeholder="S, M, L, XL">
+
+            <!-- Knapper i bunden af formularen -->
+            <div class="modal-actions">
+                <!-- Submit-knap - sender formularen -->
+                <!-- type="submit" trigger form's submit event -->
+                <button type="submit" class="btn btn-primary">Gem</button>
+
+                <!-- Annuller-knap - lukker modal uden at gemme -->
+                <!-- type="button" forhindrer form submit -->
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Annuller</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Linker til JavaScript-filen - skal være sidst i body -->
+<!-- Placering sidst sikrer at HTML er loaded før JavaScript kører -->
+<script src="admin-products.js"></script>
+</body>
+</html>
