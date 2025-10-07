@@ -1,8 +1,8 @@
-package com.example.miniProjekt.service;
+package com.example.miniProjekt.Service;
 
 
 import com.example.miniProjekt.model.Activity;
-import com.example.miniProjekt.repository.ActivityRepository;
+import com.example.miniProjekt.Repository.ActivityRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

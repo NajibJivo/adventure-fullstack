@@ -1,7 +1,7 @@
-package com.example.miniProjekt.controller;
+package com.example.miniProjekt.Controller;
 
 import com.example.miniProjekt.model.Activity;
-import com.example.miniProjekt.repository.ActivityRepository;
+import com.example.miniProjekt.Repository.ActivityRepository;
 
 import org.springframework.web.bind.annotation.*;
 
