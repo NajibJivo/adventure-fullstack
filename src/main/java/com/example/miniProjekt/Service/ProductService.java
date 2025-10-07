@@ -1,4 +1,4 @@
-package com.example.miniProjekt.Service;
+package com.example.miniProjekt.service;
 
 import com.example.miniProjekt.Repository.ProductRepository;
 import com.example.miniProjekt.model.Product;

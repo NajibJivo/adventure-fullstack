@@ -1,6 +1,5 @@
 package com.example.miniProjekt.service;
 
-import com.example.miniProjekt.Service.ReservationService;
 import com.example.miniProjekt.model.Activity;
 import com.example.miniProjekt.model.Reservation;
 import com.example.miniProjekt.model.ReservationType;

@@ -1,6 +1,6 @@
-package com.example.miniProjekt.Controller;
+package com.example.miniProjekt.controller;
 
-import com.example.miniProjekt.Service.ProductService;
+import com.example.miniProjekt.service.ProductService;
 import com.example.miniProjekt.model.Product;
 import com.example.miniProjekt.model.ProductCategory;
 import org.springframework.beans.factory.annotation.Autowired;

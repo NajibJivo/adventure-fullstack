@@ -1,9 +1,11 @@
-package com.example.miniProjekt.Service;
+package com.example.miniProjekt.service;
 
 
 import com.example.miniProjekt.model.Activity;
-import com.example.miniProjekt.Repository.ActivityRepository;
+
+import com.example.miniProjekt.service.exceptions.ActivityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,29 +13,79 @@ import java.util.Optional;
 
 @Service
 public class ActivityService {
-    private final ActivityRepository activityRepository;
+    private final com.example.miniProjekt.Repository.ActivityRepository activityRepository;
 
     // Constructor injection
-    public ActivityService(ActivityRepository activityRepository) {
+    public ActivityService(com.example.miniProjekt.Repository.ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
 
-    /** READ **/
+        /**CREATE **/
+    @Transactional
+    public Activity create(Activity input) {
+        validate(input);
+        input.setId(null); // sikkerhed: JPA skal selv generere id
+        return activityRepository.save(input);
+    }
+
+    private void validate(Activity a) {
+        if (a.getName() == null || a.getName().isBlank()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        if (a.getPrice() == null || a.getPrice().signum() < 0) {
+            throw new IllegalArgumentException("Price must be >= 0");
+        }
+        if (a.getDuration() <= 0) {
+            throw new IllegalArgumentException("Duration must be > 0");
+        }
+        if (a.getMinAge() < 0) {
+            throw new IllegalArgumentException("minAge must be >= 0");
+        }
+        if (a.getMinHeight() < 0) {
+            throw new IllegalArgumentException("minHeight must be >= 0");
+        }
+        if (a.getAvailableFrom() != null && a.getAvailableTo() != null
+                && a.getAvailableFrom().isAfter(a.getAvailableTo())) {
+            throw new IllegalArgumentException("availableFrom must be before availableTo");
+        }
+        // imageUrl er valgfri – tilføj evt. format-check senere
+    }
+
+        /** READ **/
     public List<Activity> findAll() {
         return activityRepository.findAll();
     }
 
-    /** READ **/
-    public Optional<Activity> findById(Long id) {
-        return activityRepository.findById(id);
+        /** READ **/
+    public Activity getByIdOrThrow(Long id) {
+        return activityRepository.findById(id)
+                .orElseThrow(() -> new ActivityNotFoundException(id));
     }
 
+        /** UPDATE **/
+    @Transactional
+    public Activity update(Long id, Activity input) {
+        Activity existing = getByIdOrThrow(id); // 404 hvis ikke findes
 
+        // Kopiér felter (fuld opdatering)
+        existing.setName(input.getName());
+        existing.setDescription(input.getDescription());
+        existing.setPrice(input.getPrice());
+        existing.setDuration(input.getDuration());
+        existing.setMinAge(input.getMinAge());
+        existing.setMinHeight(input.getMinHeight());
+        existing.setAvailableFrom(input.getAvailableFrom());
+        existing.setAvailableTo(input.getAvailableTo());
+        existing.setImageUrl(input.getImageUrl());
 
+        validate(existing);                 // samme validering som create()
+        return activityRepository.save(existing);
+    }
 
-
-
-
-
-
+        /** DELETE **/
+    @Transactional
+    public void delete(Long id) {
+        Activity existing = getByIdOrThrow(id); // kaster 404-exception hvis mangler
+        activityRepository.delete(existing);
+    }
 }

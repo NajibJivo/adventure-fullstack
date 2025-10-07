@@ -1,10 +1,14 @@
-package com.example.miniProjekt.Controller;
+package com.example.miniProjekt.controller;
 
 import com.example.miniProjekt.model.Activity;
-import com.example.miniProjekt.Repository.ActivityRepository;
+import com.example.miniProjekt.service.ActivityService;
 
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,49 +16,46 @@ import java.util.Optional;
 @RequestMapping("/activities") // Base URL for all activity-related endpoints
 public class ActivityController {
 
-    private final ActivityRepository activityRepository;
+    private final ActivityService activityService;
 
-    public ActivityController(ActivityRepository activityRepository) {
-        this.activityRepository = activityRepository;
+    public ActivityController(ActivityService activityService) {
+        this.activityService = activityService;
     }
 
     /** READ ALL **/
     @GetMapping
     public List<Activity> getAllActivities() {
-        return activityRepository.findAll();
+        return activityService.findAll();
     }
 
     /** READ BY ID **/
     @GetMapping("/{id}")
-    public Optional<Activity> getActivityById(@PathVariable Long id) {
-        return activityRepository.findById(id);
+    public Activity getActivityById(@PathVariable Long id) {
+        return activityService.getByIdOrThrow(id);
     }
 
-    /** CREATE **/
+    /** CREATE (201 Created + Location-header) **/
     @PostMapping
-    public Activity createActivity(@RequestBody Activity activity) {
-        return activityRepository.save(activity);
+    public ResponseEntity<Activity> createActivity(@RequestBody Activity activity) {
+        Activity saved = activityService.create(activity);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(saved.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(saved);
     }
 
-    /** UPDATE **/
+    /** UPDATE (200 OK) **/
     @PutMapping("/{id}")
     public Activity updateActivity(@PathVariable Long id, @RequestBody Activity updatedActivity) {
-        return activityRepository.findById(id)
-                .map(activity -> {
-                    activity.setName(updatedActivity.getName());
-                    activity.setDescription(updatedActivity.getDescription());
-                    activity.setPrice(updatedActivity.getPrice());
-                    activity.setDuration(updatedActivity.getDuration());
-                    activity.setMinAge(updatedActivity.getMinAge());
-                    activity.setMinHeight(updatedActivity.getMinHeight());
-                    activity.setAvailableFrom(updatedActivity.getAvailableFrom());
-                    activity.setAvailableTo(updatedActivity.getAvailableTo());
-                    return activityRepository.save(activity);
-                })
-                .orElseGet(() -> { // If activity with the given ID doesn't exist, create a new one,
-                                   // lambda runs only if Optional is empty due to orElseGet
-                    updatedActivity.setId(id);
-                    return activityRepository.save(updatedActivity);
-                });
+        return activityService.update(id, updatedActivity);
+    }
+
+    // DELETE (nyt endpoint)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        activityService.delete(id);              // kaster 404-exception hvis ikke findes
+        return ResponseEntity.noContent().build(); // 204
     }
 }
