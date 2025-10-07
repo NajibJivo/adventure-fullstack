@@ -1,6 +1,6 @@
 package com.example.miniProjekt.service;
 
-import com.example.miniProjekt.Service.ReservationService;
+import com.example.miniProjekt.Service.BookingService;
 import com.example.miniProjekt.model.Activity;
 import com.example.miniProjekt.model.Booking;
 import com.example.miniProjekt.model.ReservationType;
@@ -29,7 +29,7 @@ class BookingServiceTest {
     private BookingRepository bookingRepository;
 
     @InjectMocks
-    private ReservationService reservationService;
+    private BookingService bookingService;
 
     private Booking testBooking;
     private Activity testActivity;
@@ -52,7 +52,7 @@ class BookingServiceTest {
         when(bookingRepository.findAll()).thenReturn(bookings);
 
         // When
-        List<Booking> result = reservationService.getAllReservations();
+        List<Booking> result = bookingService.getAllReservations();
 
         // Then
         assertThat(result).hasSize(1);
@@ -66,7 +66,7 @@ class BookingServiceTest {
         when(bookingRepository.findById(1L)).thenReturn(Optional.of(testBooking));
 
         // When
-        Optional<Booking> result = reservationService.getReservationById(1L);
+        Optional<Booking> result = bookingService.getReservationById(1L);
 
         // Then
         assertThat(result).isPresent();
@@ -80,7 +80,7 @@ class BookingServiceTest {
         when(bookingRepository.findById(999L)).thenReturn(Optional.empty());
 
         // When
-        Optional<Booking> result = reservationService.getReservationById(999L);
+        Optional<Booking> result = bookingService.getReservationById(999L);
 
         // Then
         assertThat(result).isEmpty();
@@ -93,7 +93,7 @@ class BookingServiceTest {
         when(bookingRepository.save(any(Booking.class))).thenReturn(testBooking);
 
         // When
-        Booking result = reservationService.saveReservation(testBooking);
+        Booking result = bookingService.saveReservation(testBooking);
 
         // Then
         assertThat(result.getCustomerName()).isEqualTo("John Doe");
@@ -104,7 +104,7 @@ class BookingServiceTest {
     @Test
     void deleteReservation_ShouldCallRepositoryDelete() {
         // When
-        reservationService.deleteReservation(1L);
+        bookingService.deleteReservation(1L);
 
         // Then
         verify(bookingRepository, times(1)).deleteById(1L);
@@ -117,7 +117,7 @@ class BookingServiceTest {
         when(bookingRepository.findByActivityId(1L)).thenReturn(bookings);
 
         // When
-        List<Booking> result = reservationService.getReservationsForActivity(1L);
+        List<Booking> result = bookingService.getReservationsForActivity(1L);
 
         // Then
         assertThat(result).hasSize(1);
@@ -132,7 +132,7 @@ class BookingServiceTest {
         when(bookingRepository.findByType(ReservationType.PRIVATE)).thenReturn(bookings);
 
         // When
-        List<Booking> result = reservationService.getReservationsByType(ReservationType.PRIVATE);
+        List<Booking> result = bookingService.getReservationsByType(ReservationType.PRIVATE);
 
         // Then
         assertThat(result).hasSize(1);
@@ -147,7 +147,7 @@ class BookingServiceTest {
         when(bookingRepository.findByReservationTimeAfter(any(LocalDateTime.class))).thenReturn(bookings);
 
         // When
-        List<Booking> result = reservationService.getUpcomingReservations();
+        List<Booking> result = bookingService.getUpcomingReservations();
 
         // Then
         assertThat(result).hasSize(1);

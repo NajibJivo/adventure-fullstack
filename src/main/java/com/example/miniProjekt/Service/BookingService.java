@@ -9,41 +9,49 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
 @Service
-public class ReservationService {
+public class BookingService {
 
     @Autowired
     private BookingRepository bookingRepository;
 
-    public List<Booking> getAllReservations(){
+    // ------------------ CRUD METODER ------------------
+
+    // Hent alle bookings
+    public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
 
-    public Optional<Booking> getReservationById(Long id){
+    // Hent booking efter ID
+    public Optional<Booking> getBookingById(Long id) {
         return bookingRepository.findById(id);
     }
 
-    public Booking saveReservation(Booking booking) {
+    // Gem eller opdater booking
+    public Booking saveBooking(Booking booking) {
         return bookingRepository.save(booking);
     }
 
-    public void deleteReservation(Long id) {
+    // Slet booking
+    public void deleteBooking(Long id) {
         bookingRepository.deleteById(id);
     }
 
-    public List<Booking> getReservationsForActivity(Long activityId) {
+    // ------------------ SPECIAL ENDPOINTS ------------------
+
+    // Find bookings for en specifik aktivitet
+    public List<Booking> getBookingsForActivity(Long activityId) {
         return bookingRepository.findByActivityId(activityId);
     }
 
-    public List<Booking> getReservationsByType(ReservationType type) {
+    // Find bookings efter type (PRIVATE, PUBLIC osv.)
+    public List<Booking> getBookingsByType(ReservationType type) {
         return bookingRepository.findByType(type);
     }
 
-    public List<Booking> getUpcomingReservations() {
+    // Find kommende bookings
+    public List<Booking> getUpcomingBookings() {
         return bookingRepository.findByReservationTimeAfter(LocalDateTime.now());
-    }
-
-    public List<Booking> getReservationsBetween(LocalDateTime start, LocalDateTime end) {
-        return bookingRepository.findReservationsBetween(start, end);
     }
 }
