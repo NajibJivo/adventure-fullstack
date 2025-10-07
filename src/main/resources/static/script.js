@@ -77,18 +77,20 @@ function createActivityCard(a) {
         <p class="activity-description">${a.description}</p>
 
         <div class="activity-details">
+          <div class="detail-item"><span class="detail-label">Pris:</span> <span class="detail-value">${formatPrice(a.price)}</span></div>
           <div class="detail-item"><span class="detail-label">Varighed:</span> <span class="detail-value">${a.duration} min</span></div>
           <div class="detail-item"><span class="detail-label">Min. alder:</span> <span class="detail-value">${a.minAge} år</span></div>
           <div class="detail-item"><span class="detail-label">Min. højde:</span> <span class="detail-value">${a.minHeight > 0 ? a.minHeight + ' cm' : 'Ingen krav'}</span></div>
           <div class="detail-item"><span class="detail-label">Tilgængelig fra:</span> <span class="detail-value">${formatDateTime(a.availableFrom)}</span></div>
+          <div class="detail-item"><span class="detail-label">Tilgængelig til:</span> <span class="detail-value">${formatDateTime(a.availableTo)}</span></div>
         </div>
 
-        <div class="price-tag">${formatPrice(a.price)}</div>
         <button class="btn-edit" data-id="${a.id}">Rediger</button>
       </div>
     </div>
   `;
 }
+
 function displayActivities() {
   const container = document.getElementById("activities-container");
   if (!activities.length) {
@@ -101,28 +103,42 @@ function displayActivities() {
 // --- Formulardata ---
 // Hvorfor: Én kilde til at læse felter; gør validering/submit enklere.
 function readMiniForm() {
-  const name = document.getElementById("name")?.value.trim();
-  const price = Number(document.getElementById("price")?.value);
   return {
-    id: document.getElementById("id")?.value || null, // tom => create, sat => update
-    name, price
+    id: document.getElementById("id")?.value || null,
+    name: document.getElementById("name")?.value.trim(),
+    description: document.getElementById("description")?.value.trim(),
+    price: Number(document.getElementById("price")?.value),
+    duration: Number(document.getElementById("duration")?.value) || 0,
+    minAge: Number(document.getElementById("minAge")?.value) || 0,
+    minHeight: Number(document.getElementById("minHeight")?.value) || 0,
+    availableFrom: document.getElementById("availableFrom")?.value || null,
+    availableTo: document.getElementById("availableTo")?.value || null,
+    imageUrl: document.getElementById("imageUrl")?.value.trim()
   };
 }
+
 
 // --- Edit flow ---
 // Hvorfor: Indlæser valgt aktivitet i formularen for at aktivere update-flow.
 function loadActivityToForm(id) {
   const a = activities.find(x => x.id === Number(id));
   if (!a) return;
-  document.getElementById("id").value = a.id;     // switch til update-tilstand
-  document.getElementById("name").value = a.name;
-  document.getElementById("price").value = a.price;
 
-  // UX: tydeliggør at næste submit bliver en opdatering
+  document.getElementById("id").value = a.id;
+  document.getElementById("name").value = a.name;
+  document.getElementById("description").value = a.description;
+  document.getElementById("price").value = a.price;
+  document.getElementById("duration").value = a.duration;
+  document.getElementById("minAge").value = a.minAge;
+  document.getElementById("minHeight").value = a.minHeight;
+  document.getElementById("availableFrom").value = a.availableFrom ? a.availableFrom.substring(0,16) : '';
+  document.getElementById("availableTo").value = a.availableTo ? a.availableTo.substring(0,16) : '';
+  document.getElementById("imageUrl").value = a.imageUrl;
+
   const submitBtn = document.querySelector('#activity-form button[type="submit"]');
   if (submitBtn) submitBtn.textContent = "Opdater";
 
-  document.getElementById('btn-cancel').hidden = false;   // 🔹 vis “Annuller”
+  document.getElementById('btn-cancel').hidden = false;
 }
 
 // --- Submit-handler (Create/Update + feedback) ---
