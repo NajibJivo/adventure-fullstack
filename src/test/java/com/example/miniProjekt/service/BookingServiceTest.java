@@ -2,9 +2,9 @@ package com.example.miniProjekt.service;
 
 import com.example.miniProjekt.Service.ReservationService;
 import com.example.miniProjekt.model.Activity;
-import com.example.miniProjekt.model.Reservation;
+import com.example.miniProjekt.model.Booking;
 import com.example.miniProjekt.model.ReservationType;
-import com.example.miniProjekt.Repository.ReservationRepository;
+import com.example.miniProjekt.Repository.BookingRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,15 +23,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class ReservationServiceTest {
+class BookingServiceTest {
 
     @Mock
-    private ReservationRepository reservationRepository;
+    private BookingRepository bookingRepository;
 
     @InjectMocks
     private ReservationService reservationService;
 
-    private Reservation testReservation;
+    private Booking testBooking;
     private Activity testActivity;
 
     @BeforeEach
@@ -39,66 +39,66 @@ class ReservationServiceTest {
         testActivity = new Activity("Test Activity", "Description", 10, 5, 30, 100.0);
         testActivity.setId(1L);
 
-        testReservation = new Reservation("John Doe", "12345678", "john@example.com",
+        testBooking = new Booking("John Doe", "12345678", "john@example.com",
                 3, LocalDateTime.now().plusDays(1), testActivity);
-        testReservation.setId(1L);
-        testReservation.setType(ReservationType.PRIVATE);
+        testBooking.setId(1L);
+        testBooking.setType(ReservationType.PRIVATE);
     }
 
     @Test
     void getAllReservations_ShouldReturnAllReservations() {
         // Given
-        List<Reservation> reservations = Arrays.asList(testReservation);
-        when(reservationRepository.findAll()).thenReturn(reservations);
+        List<Booking> bookings = Arrays.asList(testBooking);
+        when(bookingRepository.findAll()).thenReturn(bookings);
 
         // When
-        List<Reservation> result = reservationService.getAllReservations();
+        List<Booking> result = reservationService.getAllReservations();
 
         // Then
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getCustomerName()).isEqualTo("John Doe");
-        verify(reservationRepository, times(1)).findAll();
+        verify(bookingRepository, times(1)).findAll();
     }
 
     @Test
     void getReservationById_WhenExists_ShouldReturnReservation() {
         // Given
-        when(reservationRepository.findById(1L)).thenReturn(Optional.of(testReservation));
+        when(bookingRepository.findById(1L)).thenReturn(Optional.of(testBooking));
 
         // When
-        Optional<Reservation> result = reservationService.getReservationById(1L);
+        Optional<Booking> result = reservationService.getReservationById(1L);
 
         // Then
         assertThat(result).isPresent();
         assertThat(result.get().getCustomerName()).isEqualTo("John Doe");
-        verify(reservationRepository, times(1)).findById(1L);
+        verify(bookingRepository, times(1)).findById(1L);
     }
 
     @Test
     void getReservationById_WhenNotExists_ShouldReturnEmpty() {
         // Given
-        when(reservationRepository.findById(999L)).thenReturn(Optional.empty());
+        when(bookingRepository.findById(999L)).thenReturn(Optional.empty());
 
         // When
-        Optional<Reservation> result = reservationService.getReservationById(999L);
+        Optional<Booking> result = reservationService.getReservationById(999L);
 
         // Then
         assertThat(result).isEmpty();
-        verify(reservationRepository, times(1)).findById(999L);
+        verify(bookingRepository, times(1)).findById(999L);
     }
 
     @Test
     void saveReservation_ShouldReturnSavedReservation() {
         // Given
-        when(reservationRepository.save(any(Reservation.class))).thenReturn(testReservation);
+        when(bookingRepository.save(any(Booking.class))).thenReturn(testBooking);
 
         // When
-        Reservation result = reservationService.saveReservation(testReservation);
+        Booking result = reservationService.saveReservation(testBooking);
 
         // Then
         assertThat(result.getCustomerName()).isEqualTo("John Doe");
         assertThat(result.getParticipantCount()).isEqualTo(3);
-        verify(reservationRepository, times(1)).save(testReservation);
+        verify(bookingRepository, times(1)).save(testBooking);
     }
 
     @Test
@@ -107,50 +107,50 @@ class ReservationServiceTest {
         reservationService.deleteReservation(1L);
 
         // Then
-        verify(reservationRepository, times(1)).deleteById(1L);
+        verify(bookingRepository, times(1)).deleteById(1L);
     }
 
     @Test
     void getReservationsForActivity_ShouldReturnActivityReservations() {
         // Given
-        List<Reservation> reservations = Arrays.asList(testReservation);
-        when(reservationRepository.findByActivityId(1L)).thenReturn(reservations);
+        List<Booking> bookings = Arrays.asList(testBooking);
+        when(bookingRepository.findByActivityId(1L)).thenReturn(bookings);
 
         // When
-        List<Reservation> result = reservationService.getReservationsForActivity(1L);
+        List<Booking> result = reservationService.getReservationsForActivity(1L);
 
         // Then
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getActivity().getId()).isEqualTo(1L);
-        verify(reservationRepository, times(1)).findByActivityId(1L);
+        verify(bookingRepository, times(1)).findByActivityId(1L);
     }
 
     @Test
     void getReservationsByType_ShouldReturnReservationsOfType() {
         // Given
-        List<Reservation> reservations = Arrays.asList(testReservation);
-        when(reservationRepository.findByType(ReservationType.PRIVATE)).thenReturn(reservations);
+        List<Booking> bookings = Arrays.asList(testBooking);
+        when(bookingRepository.findByType(ReservationType.PRIVATE)).thenReturn(bookings);
 
         // When
-        List<Reservation> result = reservationService.getReservationsByType(ReservationType.PRIVATE);
+        List<Booking> result = reservationService.getReservationsByType(ReservationType.PRIVATE);
 
         // Then
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getType()).isEqualTo(ReservationType.PRIVATE);
-        verify(reservationRepository, times(1)).findByType(ReservationType.PRIVATE);
+        verify(bookingRepository, times(1)).findByType(ReservationType.PRIVATE);
     }
 
     @Test
     void getUpcomingReservations_ShouldReturnFutureReservations() {
         // Given
-        List<Reservation> reservations = Arrays.asList(testReservation);
-        when(reservationRepository.findByReservationTimeAfter(any(LocalDateTime.class))).thenReturn(reservations);
+        List<Booking> bookings = Arrays.asList(testBooking);
+        when(bookingRepository.findByReservationTimeAfter(any(LocalDateTime.class))).thenReturn(bookings);
 
         // When
-        List<Reservation> result = reservationService.getUpcomingReservations();
+        List<Booking> result = reservationService.getUpcomingReservations();
 
         // Then
         assertThat(result).hasSize(1);
-        verify(reservationRepository, times(1)).findByReservationTimeAfter(any(LocalDateTime.class));
+        verify(bookingRepository, times(1)).findByReservationTimeAfter(any(LocalDateTime.class));
     }
 }

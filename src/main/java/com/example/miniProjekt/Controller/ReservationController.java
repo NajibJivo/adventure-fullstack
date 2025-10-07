@@ -1,6 +1,6 @@
 package com.example.miniProjekt.Controller;
 
-import com.example.miniProjekt.model.Reservation;
+import com.example.miniProjekt.model.Booking;
 import com.example.miniProjekt.model.ReservationType;
 import com.example.miniProjekt.Service.ReservationService;
 
@@ -18,34 +18,34 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @GetMapping
-    public List<Reservation> getAllReservations() {
+    public List<Booking> getAllReservations() {
         return reservationService.getAllReservations();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
+    public ResponseEntity<Booking> getReservationById(@PathVariable Long id) {
         return reservationService.getReservationById(id)
-                .map(reservation -> ResponseEntity.ok().body(reservation))
+                .map(booking -> ResponseEntity.ok().body(booking))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Reservation createReservation(@RequestBody Reservation reservation) {
-        return reservationService.saveReservation(reservation);
+    public Booking createReservation(@RequestBody Booking booking) {
+        return reservationService.saveReservation(booking);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Reservation> updateReservation(@PathVariable Long id, @RequestBody Reservation reservationDetails) {
+    public ResponseEntity<Booking> updateReservation(@PathVariable Long id, @RequestBody Booking bookingDetails) {
         return reservationService.getReservationById(id)
-                .map(reservation -> {
-                    reservation.setCustomerName(reservationDetails.getCustomerName());
-                    reservation.setCustomerPhone(reservationDetails.getCustomerPhone());
-                    reservation.setCustomerEmail(reservationDetails.getCustomerEmail());
-                    reservation.setParticipantCount(reservationDetails.getParticipantCount());
-                    reservation.setReservationTime(reservationDetails.getReservationTime());
-                    reservation.setType(reservationDetails.getType());
-                    reservation.setNotes(reservationDetails.getNotes());
-                    return ResponseEntity.ok(reservationService.saveReservation(reservation));
+                .map(booking -> {
+                    booking.setCustomerName(bookingDetails.getCustomerName());
+                    booking.setCustomerPhone(bookingDetails.getCustomerPhone());
+                    booking.setCustomerEmail(bookingDetails.getCustomerEmail());
+                    booking.setParticipantCount(bookingDetails.getParticipantCount());
+                    booking.setReservationTime(bookingDetails.getReservationTime());
+                    booking.setType(bookingDetails.getType());
+                    booking.setNotes(bookingDetails.getNotes());
+                    return ResponseEntity.ok(reservationService.saveReservation(booking));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -53,7 +53,7 @@ public class ReservationController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteReservation(@PathVariable Long id) {
         return reservationService.getReservationById(id)
-                .map(reservation -> {
+                .map(booking -> {
                     reservationService.deleteReservation(id);
                     return ResponseEntity.ok().build();
                 })
@@ -62,17 +62,17 @@ public class ReservationController {
 
     // Specialiserede endpoints
     @GetMapping("/activity/{activityId}")
-    public List<Reservation> getReservationsForActivity(@PathVariable Long activityId) {
+    public List<Booking> getReservationsForActivity(@PathVariable Long activityId) {
         return reservationService.getReservationsForActivity(activityId);
     }
 
     @GetMapping("/type/{type}")
-    public List<Reservation> getReservationsByType(@PathVariable ReservationType type) {
+    public List<Booking> getReservationsByType(@PathVariable ReservationType type) {
         return reservationService.getReservationsByType(type);
     }
 
     @GetMapping("/upcoming")
-    public List<Reservation> getUpcomingReservations() {
+    public List<Booking> getUpcomingReservations() {
         return reservationService.getUpcomingReservations();
     }
 }

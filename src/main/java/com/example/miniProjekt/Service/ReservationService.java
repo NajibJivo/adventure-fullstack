@@ -1,7 +1,7 @@
 package com.example.miniProjekt.Service;
 
-import com.example.miniProjekt.Repository.ReservationRepository;
-import com.example.miniProjekt.model.Reservation;
+import com.example.miniProjekt.Repository.BookingRepository;
+import com.example.miniProjekt.model.Booking;
 import com.example.miniProjekt.model.ReservationType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,37 +13,37 @@ import java.util.Optional;
 public class ReservationService {
 
     @Autowired
-    private ReservationRepository reservationRepository;
+    private BookingRepository bookingRepository;
 
-    public List<Reservation> getAllReservations(){
-        return reservationRepository.findAll();
+    public List<Booking> getAllReservations(){
+        return bookingRepository.findAll();
     }
 
-    public Optional<Reservation> getReservationById(Long id){
-        return reservationRepository.findById(id);
+    public Optional<Booking> getReservationById(Long id){
+        return bookingRepository.findById(id);
     }
 
-    public Reservation saveReservation(Reservation reservation) {
-        return reservationRepository.save(reservation);
+    public Booking saveReservation(Booking booking) {
+        return bookingRepository.save(booking);
     }
 
     public void deleteReservation(Long id) {
-        reservationRepository.deleteById(id);
+        bookingRepository.deleteById(id);
     }
 
-    public List<Reservation> getReservationsForActivity(Long activityId) {
-        return reservationRepository.findByActivityId(activityId);
+    public List<Booking> getReservationsForActivity(Long activityId) {
+        return bookingRepository.findByActivityId(activityId);
     }
 
-    public List<Reservation> getReservationsByType(ReservationType type) {
-        return reservationRepository.findByType(type);
+    public List<Booking> getReservationsByType(ReservationType type) {
+        return bookingRepository.findByType(type);
     }
 
-    public List<Reservation> getUpcomingReservations() {
-        return reservationRepository.findByReservationTimeAfter(LocalDateTime.now());
+    public List<Booking> getUpcomingReservations() {
+        return bookingRepository.findByReservationTimeAfter(LocalDateTime.now());
     }
 
-    public List<Reservation> getReservationsBetween(LocalDateTime start, LocalDateTime end) {
-        return reservationRepository.findReservationsBetween(start, end);
+    public List<Booking> getReservationsBetween(LocalDateTime start, LocalDateTime end) {
+        return bookingRepository.findReservationsBetween(start, end);
     }
 }
