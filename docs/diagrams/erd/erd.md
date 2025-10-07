@@ -16,7 +16,7 @@ Opslagsliste over udstyrstyper (hjelm, redningsvest, …). Vises som “equipmen
 Koblingstabel (M:N) der angiver hvilket udstyr en aktivitet kræver. Opdateres når en aktivitet ændres.
 
 **Booking**  
-En konkret reservation: hvilken aktivitet, hvilken kunde, dato/tid, antal deltagere og instruktørnavn (tildelt “by name”). Danner grundlag for kalender (dag/uge/måned) og understøtter book/søg/ret/annullér.
+En konkret booking: hvilken aktivitet, hvilken kunde, dato/tid, antal deltagere og instruktørnavn (tildelt “by name”). Danner grundlag for kalender (dag/uge/måned) og understøtter book/søg/ret/annullér.
 
 **Roster**  
 Vagtplan pr. instruktørnavn og dag (“assign an instructor by name to work on certain days”). I vores model er den knyttet til **Customer** (rolle = employee).
