@@ -16,7 +16,7 @@ public class BookingService {
     @Autowired
     private BookingRepository bookingRepository;
 
-    // ------------------ CRUD METODER ------------------
+    //CRUD metoder
 
     // Hent alle bookings
     public List<Booking> getAllBookings() {
@@ -37,8 +37,6 @@ public class BookingService {
     public void deleteBooking(Long id) {
         bookingRepository.deleteById(id);
     }
-
-    // ------------------ SPECIAL ENDPOINTS ------------------
 
     // Find bookings for en specifik aktivitet
     public List<Booking> getBookingsForActivity(Long activityId) {
