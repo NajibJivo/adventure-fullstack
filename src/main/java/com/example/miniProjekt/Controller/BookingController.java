@@ -1,88 +1,54 @@
-package com.example.miniProjekt.Controller;
+package com.example.miniProjekt.controller;
 
-import com.example.miniProjekt.model.Booking;
-import com.example.miniProjekt.model.ReservationType;
-import com.example.miniProjekt.Service.BookingService; // Skift til BookingService
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.miniProjekt.service.BookingService;
+import com.example.miniProjekt.web.dto.BookingRequest;
+import com.example.miniProjekt.web.dto.BookingResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/bookings") // base-path til /bookings
-@CrossOrigin(origins = "*")
+@RequestMapping("api/bookings")
 public class BookingController {
+    private final BookingService service;
 
-    @Autowired
-    private BookingService bookingService;
-
-    //CRUD endpoints
-    // Hent alle bookings
-    @GetMapping
-    public List<Booking> getAllBookings() {
-        return bookingService.getAllBookings();
+    public BookingController(BookingService service) {
+        this.service = service;
     }
 
-    // Hent booking efter ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBookingById(@PathVariable Long id) {
-        return bookingService.getBookingById(id)
-                .map(booking -> ResponseEntity.ok().body(booking))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    // Opret ny booking
+    /** CREATE **/
     @PostMapping
-    public Booking createBooking(@RequestBody Booking booking) {
-        return bookingService.saveBooking(booking);
+    public ResponseEntity<BookingResponse> create(@RequestBody BookingRequest req) {
+        BookingResponse created = service.create(req);
+        URI location = URI.create("/api/bookings/" + created.id());
+        return ResponseEntity.created(location).body(created);
     }
 
-    // Opdater eksisterende booking
+    /** READ by id **/
+    @GetMapping("/{id}")
+    public BookingResponse get(@PathVariable Long id) {
+        return service.get(id);
+    }
+
+    /** READ all **/
+    @GetMapping
+    public List<BookingResponse> list() {
+        return service.list();
+    }
+
+    /** UPDATE (partial) **/
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable Long id, @RequestBody Booking bookingDetails) {
-        return bookingService.getBookingById(id)
-                .map(booking -> {
-                    booking.setCustomerName(bookingDetails.getCustomerName());
-                    booking.setCustomerPhone(bookingDetails.getCustomerPhone());
-                    booking.setCustomerEmail(bookingDetails.getCustomerEmail());
-                    booking.setParticipantCount(bookingDetails.getParticipantCount());
-                    booking.setReservationTime(bookingDetails.getReservationTime());
-                    booking.setType(bookingDetails.getType());
-                    booking.setNotes(bookingDetails.getNotes());
-                    booking.setActivity(bookingDetails.getActivity());
-                    return ResponseEntity.ok(bookingService.saveBooking(booking));
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public BookingResponse update(@PathVariable Long id, @RequestBody BookingRequest req) {
+        return service.update(id, req);
     }
 
-    // Slet booking
+    /** DELETE **/
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteBooking(@PathVariable Long id) {
-        return bookingService.getBookingById(id)
-                .map(booking -> {
-                    bookingService.deleteBooking(id);
-                    return ResponseEntity.ok().build();
-                })
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    // Find bookings for en specifik aktivitet
-    @GetMapping("/activity/{activityId}")
-    public List<Booking> getBookingsForActivity(@PathVariable Long activityId) {
-        return bookingService.getBookingsForActivity(activityId);
-    }
-
-    // Find bookings efter type (PRIVATE, PUBLIC osv.)
-    @GetMapping("/type/{type}")
-    public List<Booking> getBookingsByType(@PathVariable ReservationType type) {
-        return bookingService.getBookingsByType(type);
-    }
-
-    // Find kommende bookings
-    @GetMapping("/upcoming")
-    public List<Booking> getUpcomingBookings() {
-        return bookingService.getUpcomingBookings();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
     }
 }

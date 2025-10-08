@@ -1,9 +1,6 @@
 package com.example.miniProjekt.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,14 +11,33 @@ public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //auto-generate primary key
     private  Long id;
+
+    @Column(nullable=false, length=200)
     private String name;
+
+    @Column(nullable=false, columnDefinition = "TEXT")
     private String description;
+
+    @Column(nullable=false, precision = 10, scale = 2)
     private BigDecimal price;
-    private int duration;
-    private int minAge;
-    private int minHeight;
+
+    @Column(nullable=false)
+    private Integer duration; // minutter
+
+    @Column(name="min_age", nullable=false)
+    private Integer minAge;
+
+    @Column(name="min_height", nullable=false)
+    private Integer minHeight; // cm
+
+    @Column(name="available_from")
     private LocalDateTime availableFrom;
+
+
+    @Column(name="available_to")
     private LocalDateTime availableTo;
+
+    @Column(name="image_url", length=255)
     private String imageUrl;
 
     public Activity() {
@@ -84,27 +100,27 @@ public class Activity {
         this.price = price;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
-    public int getMinAge() {
+    public Integer getMinAge() {
         return minAge;
     }
 
-    public void setMinAge(int minAge) {
+    public void setMinAge(Integer minAge) {
         this.minAge = minAge;
     }
 
-    public int getMinHeight() {
+    public Integer getMinHeight() {
         return minHeight;
     }
 
-    public void setMinHeight(int minHeight) {
+    public void setMinHeight(Integer minHeight) {
         this.minHeight = minHeight;
     }
 
