@@ -1,6 +1,6 @@
 package com.example.miniProjekt.controller;
 import com.example.miniProjekt.model.Activity;
-import com.example.miniProjekt.Repository.ActivityRepository;
+
 
 import com.example.miniProjekt.service.ActivityService;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;

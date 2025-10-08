@@ -6,9 +6,9 @@ CREATE TABLE IF NOT EXISTS activity (
     name            VARCHAR(200)    NOT NULL,
     description     TEXT            NOT NULL,
     price           DECIMAL(10,2)   NOT NULL,
-    duration        SMALLINT        NOT NULL,       -- minutter
-    min_age         TINYINT         NOT NULL,       -- alderskrav
-    min_height      SMALLINT        NOT NULL,       -- højdekrav i cm
+    duration        INT        NOT NULL,       -- minutter
+    min_age         INT         NOT NULL,       -- alderskrav
+    min_height      INT        NOT NULL,       -- højdekrav i cm
     available_from  DATETIME        NULL,
     available_to    DATETIME        NULL,
     image_url       VARCHAR(255)    NULL

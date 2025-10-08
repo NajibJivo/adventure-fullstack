@@ -1,153 +1,89 @@
 package com.example.miniProjekt.service;
 
-import com.example.miniProjekt.Repository.ProductRepository;
 import com.example.miniProjekt.model.Product;
-import com.example.miniProjekt.model.ProductCategory;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.miniProjekt.repository.ProductRepository;
+import com.example.miniProjekt.service.exceptions.ProductNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.transaction.annotation.Transactional;
 
-// @Service markerer dette som business logic layer
-// Ligger mellem Controller (HTTP) og Repository (Database)
+import java.math.BigDecimal;
+import java.util.List;
+
 @Service
 public class ProductService {
+    private final ProductRepository repo;
 
-    // @Autowired betyder at Spring automatisk finder og injicerer ProductRepository
-    // Vi behøver ikke skrive: productRepository = new ProductRepository()
-    @Autowired
-    private ProductRepository productRepository;
-
-    // @PostConstruct betyder at denne metode kører AUTOMATISK når applikationen starter
-    // Det sker efter at Spring har oprettet ProductService og injiceret Repository
-    @PostConstruct
-    public void init() {
-        // Kalder metoden der laver testdata
-        initializeTestData();
+    public ProductService(ProductRepository repo) {
+        this.repo = repo;
     }
 
-    // Henter alle produkter fra databasen
-    public List<Product> getAllProducts() {
-        // findAll() kommer fra JpaRepository
-        // Returnerer en List<Product> med alle produkter
-        return productRepository.findAll();
+    /** CREATE **/
+    @Transactional
+    public Product create(Product input) {
+        validate(input);
+        input.setId(null);
+        // precheck unik navn for pænere fejl end DB 500
+        if (repo.existsByNameIgnoreCase(input.getName())) {
+            throw new IllegalArgumentException("Product name already exists: " + input.getName());
+        }
+        try {
+            return repo.save(input);
+        } catch (DataIntegrityViolationException die) {
+            // fallback hvis DB-constraint alligevel trigger
+            throw new IllegalArgumentException("Product name must be unique", die);
+        }
     }
 
-    // Finder ét produkt baseret på ID
-    // Returnerer Optional fordi produktet måske ikke findes
-    public Optional<Product> getProductById(Long id) {
-        // findById() returnerer Optional<Product>
-        // Optional kan være tom (empty) hvis ID ikke findes
-        return productRepository.findById(id);
+    /** READ **/
+    public List<Product> findAll() {
+        return repo.findAll();
     }
 
-    // Gemmer et produkt (både ny og opdatering)
-    // Hvis product.id er null: opretter nyt produkt
-    // Hvis product.id findes: opdaterer eksisterende produkt
-    public Product saveProduct(Product product) {
-        // save() returnerer det gemte produkt med auto-genereret ID
-        return productRepository.save(product);
+    public Product getByIdOrThrow(Long id) {
+        return repo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
     }
 
-    // Sletter et produkt baseret på ID
-    // void betyder metoden ikke returnerer noget
-    public void deleteProduct(Long id) {
-        // deleteById() sletter produktet fra databasen
-        productRepository.deleteById(id);
-    }
+    /** UPDATE **/
+    @Transactional
+    public Product update(Long id, Product input) {
+        Product existing = getByIdOrThrow(id);
 
-    // Opdaterer kun prisen på et produkt
-    public Product updatePrice(Long id, Double newPrice) {
-        // Finder produktet - returnerer Optional
-        Optional<Product> optionalProduct = productRepository.findById(id);
-
-        // Tjekker om Optional er tom (produktet findes ikke)
-        if (optionalProduct.isEmpty()) {
-            // Kaster en fejl hvis produktet ikke findes
-            throw new RuntimeException("Produkt ikke fundet");
+        // hvis navn ændres, tjek unik
+        if (input.getName() != null && !input.getName().equalsIgnoreCase(existing.getName())) {
+            if (repo.existsByNameIgnoreCase(input.getName())) {
+                throw new IllegalArgumentException("Product name already exists: " + input.getName());
+            }
         }
 
-        // .get() henter Product objektet fra Optional
-        Product product = optionalProduct.get();
+        // fuld opdatering (eller vælg felt-for-felt hvis du vil støtte partial updates)
+        existing.setName(input.getName());
+        existing.setPrice(input.getPrice());
+        existing.setIsActive(input.getIsActive() == null ? existing.getIsActive() : input.getIsActive());
 
-        // Opdaterer prisen
-        product.setPrice(newPrice);
-
-        // Gemmer det opdaterede produkt i databasen
-        return productRepository.save(product);
+        validate(existing);
+        return repo.save(existing);
     }
 
-    // Finder produkter i en bestemt kategori
-    public List<Product> getProductsByCategory(ProductCategory category) {
-        // Bruger vores custom repository-metode
-        return productRepository.findByCategory(category);
+    /** DELETE **/
+    @Transactional
+    public void delete(Long id) {
+        Product existing = getByIdOrThrow(id);
+        repo.delete(existing);
     }
 
-    // Opretter testdata når applikationen starter
-    public void initializeTestData() {
-        // count() tæller antal produkter i databasen
-        // Kører kun hvis databasen er tom (0 produkter)
-        if (productRepository.count() == 0) {
-
-            // Opretter første T-shirt
-            Product tshirt1 = new Product(
-                    "AdventureXP T-shirt",    // navn
-                    "Hvid T-shirt med logo",  // beskrivelse
-                    149.00,                    // pris
-                    ProductCategory.T_SHIRT,   // kategori
-                    50                         // lagerbeholdning
-            );
-            // Tilføjer størrelse separat (var ikke i constructor)
-            tshirt1.setSize("M");
-
-            // Opretter anden T-shirt
-            Product tshirt2 = new Product(
-                    "AdventureXP T-shirt",
-                    "Sort T-shirt med logo",
-                    149.00,
-                    ProductCategory.T_SHIRT,
-                    30
-            );
-            tshirt2.setSize("L");
-
-            // Opretter slik-produkter
-            Product candy1 = new Product(
-                    "Gummibamser",
-                    "200g pose",
-                    25.00,
-                    ProductCategory.SNACK,
-                    100
-            );
-
-            Product candy2 = new Product(
-                    "Chokoladebar",
-                    "Mælkechokolade",
-                    15.00,
-                    ProductCategory.SNACK,
-                    80
-            );
-
-            // Opretter sodavand-produkter
-            Product soda1 = new Product(
-                    "Cola",
-                    "0,5L flaske",
-                    20.00,
-                    ProductCategory.SODA,
-                    150
-            );
-
-            Product soda2 = new Product(
-                    "Fanta",
-                    "0,5L flaske",
-                    20.00,
-                    ProductCategory.SODA,
-                    120
-            );
-
-            // saveAll() gemmer alle produkter i én database-operation
-            // List.of() opretter en liste med de 6 produkter
-            productRepository.saveAll(List.of(tshirt1, tshirt2, candy1, candy2, soda1, soda2));
+    private void validate(Product p) {
+        if (p.getName() == null || p.getName().isBlank()) {
+            throw new IllegalArgumentException("name is required");
+        }
+        if (p.getPrice() == null) {
+            throw new IllegalArgumentException("price is required");
+        }
+        if (p.getPrice().compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("price must be >= 0");
+        }
+        if (p.getIsActive() == null) {
+            p.setIsActive(true); // default som i DB
         }
     }
 }

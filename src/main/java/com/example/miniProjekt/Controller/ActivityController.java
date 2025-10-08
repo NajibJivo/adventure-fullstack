@@ -10,10 +10,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping("/activities") // Base URL for all activity-related endpoints
+@RequestMapping("/api/activities") // Base URL for all activity-related endpoints
 public class ActivityController {
 
     private final ActivityService activityService;
@@ -36,8 +35,8 @@ public class ActivityController {
 
     /** CREATE (201 Created + Location-header) **/
     @PostMapping
-    public ResponseEntity<Activity> createActivity(@RequestBody Activity activity) {
-        Activity saved = activityService.create(activity);
+    public ResponseEntity<Activity> createActivity(@RequestBody Activity updatedActivity) {
+        Activity saved = activityService.create(updatedActivity);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -52,7 +51,7 @@ public class ActivityController {
         return activityService.update(id, updatedActivity);
     }
 
-    // DELETE (nyt endpoint)
+    /** DELETE (nyt endpoint) **/
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         activityService.delete(id);              // kaster 404-exception hvis ikke findes

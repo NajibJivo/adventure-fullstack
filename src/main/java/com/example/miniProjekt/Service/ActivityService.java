@@ -2,21 +2,19 @@ package com.example.miniProjekt.service;
 
 
 import com.example.miniProjekt.model.Activity;
-
+import com.example.miniProjekt.repository.ActivityRepository;
 import com.example.miniProjekt.service.exceptions.ActivityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-
 
 @Service
 public class ActivityService {
-    private final com.example.miniProjekt.Repository.ActivityRepository activityRepository;
+    private final ActivityRepository activityRepository;
 
     // Constructor injection
-    public ActivityService(com.example.miniProjekt.Repository.ActivityRepository activityRepository) {
+    public ActivityService(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
 
@@ -35,13 +33,13 @@ public class ActivityService {
         if (a.getPrice() == null || a.getPrice().signum() < 0) {
             throw new IllegalArgumentException("Price must be >= 0");
         }
-        if (a.getDuration() <= 0) {
+        if (a.getDuration() == null || a.getDuration() <= 0) {
             throw new IllegalArgumentException("Duration must be > 0");
         }
-        if (a.getMinAge() < 0) {
+        if (a.getMinAge() == null || a.getMinAge() < 0) {
             throw new IllegalArgumentException("minAge must be >= 0");
         }
-        if (a.getMinHeight() < 0) {
+        if (a.getMinHeight() == null || a.getMinHeight() < 0) {
             throw new IllegalArgumentException("minHeight must be >= 0");
         }
         if (a.getAvailableFrom() != null && a.getAvailableTo() != null
