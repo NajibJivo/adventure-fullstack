@@ -1,6 +1,7 @@
 package com.example.miniProjekt.model;
 
 public enum BookingStatus {
-    EDIT,
-    CANCELLED,
+    PENDING, //** ny booking som ikke har fået bekræftelse */
+    CONFIRMED,
+    CANCELLED
 }

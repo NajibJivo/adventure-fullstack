@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adventure XP - Bookinger</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- TOP SECTION -->
+    <header class="header">
+      <h1>AdventureXP</h1>
+      <nav class="admin-nav">
+        <a href="activity.html">Aktiviteter</a>
+        <a href="booking.html" class="active">Bookinger</a>
+        <a href="admin-products.html">Butik</a>
+      </nav>
+    </header>
+
+    <!-- ADMIN-PANEL: Opret/Rediger booking -->
+    <section class="admin-panel">
+      <h2>Admin: Opret / Rediger booking</h2>
+      <form id="booking-form">
+        <!-- Skjult ID-felt: tomt = opret, udfyldt = rediger -->
+        <input type="hidden" id="booking-id" name="id" />
+
+        <!-- Activity dropdown -->
+        <label>
+          Aktivitet *
+          <select id="activity-id" name="activityId" required>
+            <option value="">-- Vælg aktivitet --</option>
+          </select>
+        </label>
+
+        <!-- Customer dropdown (tom for nu) -->
+        <label>
+          Kunde *
+          <select id="customer-id" name="customerId" required>
+            <option value="">-- Vælg kunde --</option>
+          </select>
+        </label>
+
+        <!-- Start dato/tid -->
+        <label>
+          Start dato & tid *
+          <input id="start-datetime" name="startDatetime" type="datetime-local" required />
+        </label>
+
+        <!-- Antal deltagere -->
+        <label>
+          Antal deltagere *
+          <input id="participants" name="participants" type="number" min="1" value="1" required />
+        </label>
+
+        <!-- Booking status -->
+        <label>
+          Status *
+          <select id="booking-status" name="bookingStatus" required>
+            <option value="PENDING">Afventende</option>
+            <option value="CONFIRMED">Bekræftet</option>
+            <option value="CANCELLED">Aflyst</option>
+          </select>
+        </label>
+
+        <!-- Instruktør (optional) -->
+        <label>
+          Instruktør (valgfri)
+          <input id="instructor-name" name="instructorName" type="text" placeholder="F.eks. Anders Hansen" />
+        </label>
+
+        <!-- Submit & Cancel knapper -->
+        <button type="submit">Gem</button>
+        <button type="button" id="btn-cancel" class="btn-secondary" hidden>
+          Annuller
+        </button>
+      </form>
+    </section>
+
+    <!-- HOVEDINDHOLD -->
+    <div class="container">
+      <h2 class="page-title">Oversigt Over Bookinger</h2>
+
+      <!-- HER INDSÆTTES BOOKINGER DYNAMISK -->
+      <div id="bookings-container" class="activities-grid">
+        <div class="loading">Indlæser bookinger...</div>
+      </div>
+    </div>
+
+    <script src="booking.js"></script>
+  </body>
+</html>

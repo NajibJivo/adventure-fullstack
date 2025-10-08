@@ -263,6 +263,62 @@ body {
   gap:.5rem;
 }
 
+/* --- Booking Form --- */
+/* 2-kolonne layout */
+#booking-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+/* Label styling - mere tydelig */
+#booking-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--brown-text);
+}
+
+/* Bedre styling på inputs */
+#booking-form input,
+#booking-form select {
+  padding: 0.75rem;
+  border: 2px solid #E8E0D5;
+  border-radius: 8px;
+  background: white;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+/* Når man klikker i et felt */
+#booking-form input:focus,
+#booking-form select:focus {
+  outline: none;
+  border-color: var(--gold-accent);
+  box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
+}
+
+/* Start dato/tid - fuld bredde */
+#booking-form label:has(#start-datetime) {
+  grid-column: 1 / 3;
+}
+
+/* Instruktør - fuld bredde */
+#booking-form label:has(#instructor-name) {
+  grid-column: 1 / 3;
+}
+
+/* Knapper - fuld bredde */
+.form-buttons {
+  grid-column: 1 / 3;
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+
 /* Admin-panel (formularen øverst) */
 .admin-panel{
   max-width: 980px;
@@ -278,6 +334,33 @@ body {
   margin: 0 0 0.75rem 0;
   font-size: 1.25rem;
 }
+
+/* --- Admin Form Enhancements --- */
+#activity-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--cream-light);
+  padding: 1.5rem;
+  border-radius: 1rem;
+}
+
+#activity-form button {
+  align-self: flex-end;
+}
+
+.btn-secondary,
+#btn-cancel {
+  background-color: var(--brown-medium);
+  color: white;
+  transition: 0.3s;
+}
+
+.btn-secondary:hover,
+#btn-cancel:hover {
+  background-color: var(--gold-accent);
+}
+
 
 /* Formularlayout: læsbar, responsiv */
 #activity-form{
@@ -486,6 +569,22 @@ body {
     gap: 10px;
 }
 
+/* STATUS BADGES FOR BOOKINGER */
+.status-pending {
+    background: #FEF3C7; /* Gul */
+    color: #92400E;
+}
+
+.status-confirmed {
+    background: #D1FAE5; /* Grøn */
+    color: #065F46;
+}
+
+.status-cancelled {
+    background: #FEE2E2; /* Rød */
+    color: #991B1B;
+}
+
 /* BUTTONS */
 .btn {
     padding: 10px 20px;
@@ -520,9 +619,37 @@ body {
     color: white;
 }
 
+/* --- Form Button Layout --- */
+.form-buttons {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+
 .btn-delete {
-    background: #d9534f;
-    color: white;
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #DC2626;
+    background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.06s ease, background 0.15s ease, box-shadow 0.15s ease;
+    text-align: center;
+}
+
+.btn-delete:hover {
+    background: linear-gradient(135deg, #B91C1C 0%, #991B1B 100%);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-delete:active {
+    transform: translateY(0);
 }
 
 /* MODAL */
