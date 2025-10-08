@@ -345,6 +345,24 @@ body {
   border-radius: 1rem;
 }
 
+#activity-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: .6rem .7rem;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  background: #f8fafc;
+  outline: none;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+}
+
+#activity-form textarea:focus {
+  border-color: #b4c0cc;
+  box-shadow: 0 0 0 3px rgba(60, 120, 200, .12);
+}
+
 #activity-form button {
   align-self: flex-end;
 }
