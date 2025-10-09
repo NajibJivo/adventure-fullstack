@@ -51,7 +51,7 @@ public class BookingService {
         b.setStartDatetime(req.startDatetime());
         b.setParticipants(req.participants());
         b.setInstructorName(req.instructorName());
-        b.setBookingStatus(req.bookingStatus() == null ? BookingStatus.EDIT : req.bookingStatus());
+        b.setBookingStatus(req.bookingStatus() == null ? BookingStatus.PENDING : req.bookingStatus());
 
         return toResponse(bookingRepo.save(b));
     }

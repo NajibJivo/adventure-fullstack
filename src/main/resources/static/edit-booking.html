@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adventure XP - Rediger Booking</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- TOP SECTION  -->
+    <header class="header">
+      <h1>AdventureXP</h1>
+      <nav class="admin-nav">
+        <a href="activity.html">Aktiviteter</a>
+        <a href="booking.html" class="active">Bookinger</a>
+      </nav>
+    </header>
+
+    <!-- ADMIN-PANEL: Bruges til at oprette/redigere bookinger -->
+    <section class="admin-panel">
+      <h2>Rediger booking</h2>
+      <form id="booking-form">
+        <input type="hidden" id="id" name="id" />
+
+        <label>
+          Aktivitet *
+          <select id="activityId" required>
+            <option value="">-- Indlæser aktiviteter --</option>
+          </select>
+        </label>
+
+        <label>
+          Kunde *
+          <select id="customerId" required>
+            <option value="">-- Indlæser kunder --</option>
+          </select>
+        </label>
+
+        <label>
+          Start dato & tid *
+          <input id="startDatetime" name="startDatetime" type="datetime-local" required />
+        </label>
+
+        <label>
+          Antal deltagere *
+          <input id="participants" name="participants" type="number" min="1" value="1" required />
+        </label>
+
+        <label>
+          Status *
+          <select id="bookingStatus" name="bookingStatus" required>
+            <option value="PENDING">Afventende</option>
+            <option value="CONFIRMED">Bekræftet</option>
+            <option value="CANCELLED">Aflyst</option>
+          </select>
+        </label>
+
+        <label>
+          Instruktør 
+          <input id="instructorName" name="instructorName" type="text" placeholder="F.eks. Anders Hansen" />
+        </label>
+
+        <!-- Knapper i deres egen wrapper -->
+        <div class="form-buttons">
+          <button type="submit">Gem</button>
+          <button type="button" id="btn-cancel" class="btn-secondary" hidden>Annuller</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Script skal stå sidst så JS kan finde elementerne -->
+    <script src="edit-booking.js"></script>
+  </body>
+</html>

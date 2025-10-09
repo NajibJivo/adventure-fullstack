@@ -10,6 +10,7 @@ services:                                 # Alle containere i dette projekt
       MYSQL_PASSWORD: apppassword         # App-brugerens password
     volumes:                              # Persistér data lokalt (over container-liv)
       - mysql_data:/var/lib/mysql         # Navngivet volume til MySQL data
+      - ./initData.sql:/docker-entrypoint-initdb.d/initData.sql
     networks:
       - adventurexp-net                   # Privat netværk mellem services
     healthcheck:                          # Vent til DB svarer før app starter

@@ -48,6 +48,26 @@ body {
     letter-spacing: 0.02em;
 }
 
+/* ADMIN NAVIGATION */
+.admin-nav {
+    margin-top: 15px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.admin-nav a {
+    color: var(--brown-text);
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+.admin-nav a:hover,
+.admin-nav a.active {
+    background-color: var(--cream-dark);
+}
+
 /* HOVEDINDHOLD */
 .container {
     max-width: 1400px;
@@ -88,22 +108,22 @@ body {
 
 /* the frame for the images represnting certain activities */
 .activity-image {
-    width: 100%;    /* here is the width of the frame that can´t be exceeded by the image */
-    height: 250px;  /* here is the height of the frame that can´t be exceeded by the image */
+    width: 100%;
+    height: 250px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 5em;
     position: relative;
-    overflow: hidden; /* ensures that if any content inside the image frame that’s bigger than the div, it gets clipped */
+    overflow: hidden;
 }
 
 /* Makes the image fill the container, keep its aspect ratio, and avoid stretching */
 .activity-img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* keeps original aspect ratio for images, so it doesn’t stretch, exceeding parts are cropped */
-    display: block;    /* removes the tiny gap below the image gets cropped to keep aspect ratio.*/
+    object-fit: cover;
+    display: block;
 }
 
 /* Soft pastel colors inspired by Tivoli */
@@ -125,6 +145,9 @@ body {
 
 .activity-content {
     padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
 }
 
 .activity-title {
@@ -203,34 +226,265 @@ body {
     border: 2px dashed rgba(45, 24, 16, 0.2);
 }
 
-/* RESPONSIVE DESIGN */
-@media (max-width: 768px) {
-    .header h1 {
-        font-size: 1.8em;
-    }
-    
-    .page-title {
-        font-size: 2em;
-    }
-    
-    .activities-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .activity-details {
-        grid-template-columns: 1fr;
-    }
-    
-    .header {
-        padding: 15px 20px;
-    }
-    
-    .container {
-        margin: 20px auto;
-    }
+/* Admin-panel (formularen øverst) */
+.admin-panel {
+    max-width: 980px;
+    margin: 1.5rem auto;
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border: 1px solid #e6e6e6;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.06);
 }
 
-/* Knap – neutral, moderne */
+.admin-panel h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.25rem;
+}
+
+/* ============================================
+   ACTIVITY FORM STYLING
+   ============================================ */
+
+#activity-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: .9rem 1rem;
+    background: var(--cream-light);
+    padding: 1.5rem;
+    border-radius: 1rem;
+}
+
+#activity-form label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 600;
+    font-size: .95rem;
+    gap: .35rem;
+    color: var(--brown-text);
+}
+
+/* Inputs */
+#activity-form input[type="text"],
+#activity-form input[type="number"],
+#activity-form input[type="datetime-local"],
+#activity-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: .6rem .7rem;
+    border: 1px solid #d0d7de;
+    border-radius: 10px;
+    background: #f8fafc;
+    outline: none;
+    font-family: inherit;
+}
+
+#activity-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+#activity-form input:focus,
+#activity-form textarea:focus {
+    border-color: #b4c0cc;
+    box-shadow: 0 0 0 3px rgba(60, 120, 200, .12);
+}
+
+/* Beskrivelse og Billede URL - fuld bredde */
+#activity-form label:has(#description),
+#activity-form label:has(#imageUrl) {
+    grid-column: 1 / 3;
+}
+
+/* Form buttons wrapper for activity form */
+#activity-form .form-buttons {
+    grid-column: 1 / 3;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+/* Gem knap i activity form - virker med eller uden .form-buttons */
+#activity-form button[type="submit"] {
+    padding: .7rem 1rem;
+    border: 1px solid var(--brown-text);
+    background: linear-gradient(135deg, var(--brown-text) 0%, var(--brown-medium) 100%);
+    color: var(--white);
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .06s ease, box-shadow .15s ease;
+    height: 40px;
+}
+
+#activity-form button[type="submit"]:hover {
+    background: linear-gradient(135deg, var(--brown-medium) 0%, #4A3628 100%);
+    box-shadow: 0 6px 16px rgba(45, 24, 16, 0.25);
+    transform: translateY(-2px);
+}
+
+#activity-form button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* Annuller knap i activity form - virker med eller uden .form-buttons */
+#activity-form #btn-cancel {
+    background: #FDE8E8;
+    border: 1px solid #F5B5B5;
+    color: #7F1D1D;
+    cursor: pointer;
+    transition: transform .06s ease, background .15s ease, box-shadow .15s ease;
+    padding: .7rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    height: 40px;
+}
+
+#activity-form #btn-cancel:hover {
+    background: #FACCCC;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+#activity-form #btn-cancel:active {
+    transform: translateY(1px);
+}
+
+/* ============================================
+   BOOKING FORM STYLING
+   ============================================ */
+
+#booking-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    background: var(--cream-light);
+    padding: 1.5rem;
+    border-radius: 1rem;
+}
+
+#booking-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--brown-text);
+}
+
+#booking-form input,
+#booking-form select {
+    padding: 0.75rem;
+    border: 2px solid #E8E0D5;
+    border-radius: 8px;
+    background: white;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+#booking-form input:focus,
+#booking-form select:focus {
+    outline: none;
+    border-color: var(--gold-accent);
+    box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
+}
+
+/* Start dato/tid - fuld bredde */
+#booking-form label:has(#startDatetime) {
+    grid-column: 1 / 3;
+}
+
+/* Instruktør - fuld bredde */
+#booking-form label:has(#instructorName) {
+    grid-column: 1 / 3;
+}
+
+/* Form buttons wrapper for booking form */
+#booking-form .form-buttons {
+    grid-column: 1 / 3;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+/* Gem knap i booking form */
+#booking-form .form-buttons button[type="submit"] {
+    padding: .7rem 1rem;
+    border: 1px solid var(--brown-text);
+    background: linear-gradient(135deg, var(--brown-text) 0%, var(--brown-medium) 100%);
+    color: var(--white);
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform .06s ease, box-shadow .15s ease;
+    height: 40px;
+}
+
+#booking-form .form-buttons button[type="submit"]:hover {
+    background: linear-gradient(135deg, var(--brown-medium) 0%, #4A3628 100%);
+    box-shadow: 0 6px 16px rgba(45, 24, 16, 0.25);
+    transform: translateY(-2px);
+}
+
+#booking-form .form-buttons button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+/* Annuller knap i booking form */
+#booking-form .form-buttons #btn-cancel {
+    background: #FDE8E8;
+    border: 1px solid #F5B5B5;
+    color: #7F1D1D;
+    cursor: pointer;
+    transition: transform .06s ease, background .15s ease, box-shadow .15s ease;
+    padding: .7rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    height: 40px;
+}
+
+#booking-form .form-buttons #btn-cancel:hover {
+    background: #FACCCC;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+#booking-form .form-buttons #btn-cancel:active {
+    transform: translateY(1px);
+}
+
+/* ============================================
+   GENERELLE KNAPPER
+   ============================================ */
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: var(--brown-text);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background: var(--brown-medium);
+}
+
+.btn-secondary {
+    background: var(--cream-dark);
+    color: var(--brown-text);
+}
+
+.btn-small {
+    padding: 8px 16px;
+    font-size: 0.9em;
+}
+
 .btn-edit {
     display: inline-block;
     padding: 0.75rem 1.5rem;
@@ -256,145 +510,34 @@ body {
     transform: translateY(0);
 }
 
-/* Lidt layout så knappen ikke “hænger” */
-.activity-content{
-  display:flex;
-  flex-direction:column;
-  gap:.5rem;
+.btn-delete {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    border: 1px solid #DC2626;
+    background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+    color: var(--white);
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.06s ease, background 0.15s ease, box-shadow 0.15s ease;
+    text-align: center;
 }
 
-/* Admin-panel (formularen øverst) */
-.admin-panel{
-  max-width: 980px;
-  margin: 1.5rem auto;
-  padding: 1rem 1.25rem;
-  background: #fff;
-  border: 1px solid #e6e6e6;
-  border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+.btn-delete:hover {
+    background: linear-gradient(135deg, #B91C1C 0%, #991B1B 100%);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    transform: translateY(-2px);
 }
 
-.admin-panel h2{
-  margin: 0 0 0.75rem 0;
-  font-size: 1.25rem;
+.btn-delete:active {
+    transform: translateY(0);
 }
 
-/* Formularlayout: læsbar, responsiv */
-#activity-form{
-  display: grid;
-  grid-template-columns: 1fr 1fr auto auto; /* Navn | Pris | Gem | Annuller */
-  gap: .9rem 1rem;
-  align-items: end;
-}
+/* ============================================
+   SHOP/PRODUCTS STYLING
+   ============================================ */
 
-
-#activity-form label{
-  display: flex;
-  flex-direction: column;
-  font-weight: 600;
-  font-size: .95rem;
-  gap: .35rem;
-}
-
-/* Inputs */
-#activity-form input[type="text"],
-#activity-form input[type="number"]{
-  width: 100%;
-  box-sizing: border-box;
-  padding: .6rem .7rem;
-  border: 1px solid #d0d7de;
-  border-radius: 10px;
-  background: #f8fafc;
-  outline: none;
-}
-#activity-form input:focus{
-  border-color: #b4c0cc;
-  box-shadow: 0 0 0 3px rgba(60, 120, 200, .12);
-}
-
-/* Gem/Opdater-knappen */
-#activity-form button[type="submit"]{
-  padding: .7rem 1rem;
-  border: 1px solid var(--brown-text);
-  background: linear-gradient(135deg, var(--brown-text) 0%, var(--brown-medium) 100%);
-  color: var(--white);
-  border-radius: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform .06s ease, box-shadow .15s ease, opacity .15s ease;
-}
-
-#activity-form button[type="submit"]:hover{
-  background: linear-gradient(135deg, var(--brown-medium) 0%, #4A3628 100%);
-  box-shadow: 0 6px 16px rgba(45, 24, 16, 0.25);
-  transform: translateY(-2px);
-}
-
-#activity-form button[type="submit"]:active{
-  transform: translateY(0);
-}
-
-.btn-secondary{
-  padding:.7rem 1rem;
-  border:1px solid #d0d7de;
-  background:#f6f8fa;
-  color:#111827;
-  border-radius:10px;
-  font-weight:700;
-  cursor:pointer;
-  margin-left:.5rem;
-  transition:transform .06s ease, background .15s ease, box-shadow .15s ease;
-}
-.btn-secondary:hover{ background:#eef1f5; box-shadow:0 2px 8px rgba(0,0,0,.06); }
-.btn-secondary:active{ transform:translateY(1px); }
-
-/* Ens størrelse med submit */
-#activity-form button[type="submit"],
-#btn-cancel{
-  height: 40px;
-  padding: .7rem 1rem;
-  border-radius: 10px;
-  font-weight: 700;
-}
-
-/* Annuller – light red */
-#btn-cancel{
-  background: #FDE8E8;        /* lys rød baggrund */
-  border: 1px solid #F5B5B5;  /* lys rød kant */
-  color: #7F1D1D;             /* mørk rød tekst */
-  cursor: pointer;
-  transition: transform .06s ease, background .15s ease, box-shadow .15s ease;
-  margin-left: .5rem;         /* lille afstand fra Gem */
-}
-#btn-cancel:hover{
-  background: #FACCCC;        /* lidt mørkere ved hover */
-  box-shadow: 0 2px 8px rgba(0,0,0,.06);
-}
-#btn-cancel:active{ transform: translateY(1px); }
-
-
-/* ---------CSS TIL BUTIK SIDEN------------
-/* ADMIN NAVIGATION */
-.admin-nav {
-    margin-top: 15px;
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-}
-
-.admin-nav a {
-    color: var(--brown-text);
-    padding: 8px 16px;
-    border-radius: 6px;
-    transition: background-color 0.3s;
-}
-
-.admin-nav a:hover,
-.admin-nav a.active {
-    background-color: var(--cream-dark);
-}
-
-/* ADMIN HEADER */
 .admin-header {
     display: flex;
     justify-content: space-between;
@@ -402,7 +545,6 @@ body {
     margin-bottom: 30px;
 }
 
-/* FILTER SECTION */
 .filter-section {
     display: flex;
     gap: 10px;
@@ -426,14 +568,12 @@ body {
     color: var(--white);
 }
 
-/* PRODUCTS GRID */
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
 }
 
-/* PRODUCT CARD */
 .product-card {
     background: var(--white);
     border-radius: 12px;
@@ -486,46 +626,38 @@ body {
     gap: 10px;
 }
 
-/* BUTTONS */
-.btn {
-    padding: 10px 20px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
+/* STATUS BADGES FOR BOOKINGER */
+.status-pending {
+    background: #FEF3C7;
+    color: #92400E;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
     font-weight: 600;
-    transition: all 0.3s;
 }
 
-.btn-primary {
-    background: var(--brown-text);
-    color: var(--white);
+.status-confirmed {
+    background: #D1FAE5;
+    color: #065F46;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
 }
 
-.btn-primary:hover {
-    background: var(--brown-medium);
+.status-cancelled {
+    background: #FEE2E2;
+    color: #991B1B;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
 }
 
-.btn-secondary {
-    background: var(--cream-dark);
-    color: var(--brown-text);
-}
+/* ============================================
+   MODAL
+   ============================================ */
 
-.btn-small {
-    padding: 8px 16px;
-    font-size: 0.9em;
-}
-
-.btn-edit {
-    background: var(--gold-accent);
-    color: white;
-}
-
-.btn-delete {
-    background: #d9534f;
-    color: white;
-}
-
-/* MODAL */
 .modal {
     display: none;
     position: fixed;
@@ -593,3 +725,42 @@ body {
     color: var(--brown-text);
 }
 
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.8em;
+    }
+    
+    .page-title {
+        font-size: 2em;
+    }
+    
+    .activities-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .activity-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .header {
+        padding: 15px 20px;
+    }
+    
+    .container {
+        margin: 20px auto;
+    }
+    
+    #activity-form,
+    #booking-form {
+        grid-template-columns: 1fr;
+    }
+    
+    #activity-form .form-buttons,
+    #booking-form .form-buttons {
+        grid-column: 1;
+    }
+}

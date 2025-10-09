@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adventure XP - Aktiviteter</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- TOP SECTION  -->
+    <header class="header">
+      <h1>AdventureXP</h1>
+      <nav class="admin-nav">
+        <a href="activity.html" class="active">Aktiviteter</a>
+      </nav>
+    </header>
+
+    <!-- ADMIN-PANEL: Bruges til at oprette/redigere aktiviteter -->
+    <section class="admin-panel">
+      <h2>Rediger aktivitet</h2>
+      <form id="activity-form">
+        <input type="hidden" id="id" name="id" />
+
+        <!-- Navn på aktiviteten (obligatorisk) -->
+        <label>
+          Navn *
+          <input id="name" name="name" required type="text" />
+        </label>
+
+        <!-- Min. alder -->
+        <label>
+          Min. alder
+          <input id="minAge" name="minAge" type="number" min="0" />
+        </label>
+
+         <!-- Varighed -->
+        <label>
+          Varighed (min)
+          <input id="duration" name="duration" type="number" min="0" />
+        </label>
+
+        <!-- Pris i DKK (obligatorisk, ≥ 0) -->
+        <label>
+          Pris (DKK) *
+          <input
+            id="price"
+            name="price"
+            type="number"
+            step="0.01"
+            min="0"
+            required
+          />
+        </label>
+
+        <!-- Min. højde -->
+        <label>
+          Min. højde (cm)
+          <input id="minHeight" name="minHeight" type="number" min="0" />
+        </label>
+
+         <!-- Tilgængelig fra -->
+        <label>
+          Tilgængelig fra
+          <input
+            id="availableFrom"
+            name="availableFrom"
+            type="datetime-local"
+          />
+        </label>
+
+        <!-- Tilgængelig til -->
+        <label>
+          Tilgængelig til
+          <input id="availableTo" name="availableTo" type="datetime-local" />
+        </label>
+
+        <!-- Beskrivelse -->
+        <label>
+          Beskrivelse
+          <textarea id="description" name="description" rows="3"></textarea>
+        </label>
+
+        <!-- Billede URL -->
+        <label>
+          Billede URL
+          <input id="imageUrl" name="imageUrl" type="text" />
+        </label>
+
+        <!-- Knapper i deres egen wrapper -->
+        <div class="form-buttons">
+          <button type="submit">Gem</button>
+          <button type="button" id="btn-cancel" class="btn-secondary" hidden>
+            Annuller
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Script skal stå sidst så JS kan finde elementerne -->
+    <script src="edit-activity.js"></script>
+  </body>
+</html>
