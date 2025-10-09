@@ -49,12 +49,12 @@ public class ActivityService {
         // imageUrl er valgfri – tilføj evt. format-check senere
     }
 
-        /** READ **/
+        /** READ - All**/
     public List<Activity> findAll() {
         return activityRepository.findAll();
     }
 
-        /** READ **/
+        /** READ - Single**/
     public Activity getByIdOrThrow(Long id) {
         return activityRepository.findById(id)
                 .orElseThrow(() -> new ActivityNotFoundException(id));

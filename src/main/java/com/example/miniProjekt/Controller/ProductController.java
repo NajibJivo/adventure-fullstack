@@ -9,7 +9,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-
+/**
+ * ProductController – REST-endpoints for CRUD på produkter.
+ * Sender/returnerer hele Product-objekter (ingen DTO endnu).
+ */
 @RestController
 @RequestMapping("/product")
 public class ProductController {
