@@ -17,15 +17,12 @@
       </nav>
     </header>
 
-    <!-- ADMIN-PANEL: Bruges til at oprette/redigere aktiviteter.
-         Vi starter med en formular hvor alle felter er med. -->
-    <!-- Skjult id-felt: tomt = opret, udfyldt = rediger -->
+    <!-- ADMIN-PANEL: Bruges til at oprette/redigere aktiviteter -->
     <section class="admin-panel">
       <h2>Opret aktivitet</h2>
       <form id="activity-form">
         <input type="hidden" id="id" name="id" />
 
-    
         <!-- Navn på aktiviteten (obligatorisk) -->
         <label>
           Navn *
@@ -73,30 +70,31 @@
           />
         </label>
 
-      
         <!-- Tilgængelig til -->
         <label>
           Tilgængelig til
           <input id="availableTo" name="availableTo" type="datetime-local" />
         </label>
 
-           <!-- Beskrivelse -->
+        <!-- Beskrivelse -->
         <label>
           Beskrivelse
           <textarea id="description" name="description" rows="3"></textarea>
         </label>
-         <!-- Billede URL -->
+
+        <!-- Billede URL -->
         <label>
           Billede URL
           <input id="imageUrl" name="imageUrl" type="text" />
         </label>
 
-        <!-- Submit & Cancel knapper
-             Næste step: JS kobles på til at læse/validerer og gemmer data -->
-        <button type="submit">Gem</button>
-        <button type="button" id="btn-cancel" class="btn-secondary" hidden>
-          Annuller
-        </button>
+        <!-- Knapper i deres egen wrapper -->
+        <div class="form-buttons">
+          <button type="submit">Gem</button>
+          <button type="button" id="btn-cancel" class="btn-secondary" hidden>
+            Annuller
+          </button>
+        </div>
       </form>
     </section>
 

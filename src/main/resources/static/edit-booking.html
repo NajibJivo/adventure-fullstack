@@ -3,23 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Adventure XP - Bookinger</title>
+    <title>Adventure XP - Rediger Booking</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <!-- TOP SECTION  -->
     <header class="header">
       <h1>AdventureXP</h1>
       <nav class="admin-nav">
         <a href="activity.html">Aktiviteter</a>
         <a href="booking.html" class="active">Bookinger</a>
-        <a href="admin-products.html">Butik</a>
       </nav>
     </header>
 
+    <!-- ADMIN-PANEL: Bruges til at oprette/redigere bookinger -->
     <section class="admin-panel">
-      <h2>Opret booking</h2>
+      <h2>Rediger booking</h2>
       <form id="booking-form">
-        
         <input type="hidden" id="id" name="id" />
 
         <label>
@@ -68,13 +68,7 @@
       </form>
     </section>
 
-    <div class="container">
-      <h2 class="page-title">Oversigt Over Bookinger</h2>
-      <div id="bookings-container" class="activities-grid">
-        <div class="loading">Indlæser bookinger...</div>
-      </div>
-    </div>
-
-    <script src="booking.js"></script>
+    <!-- Script skal stå sidst så JS kan finde elementerne -->
+    <script src="edit-booking.js"></script>
   </body>
 </html>
