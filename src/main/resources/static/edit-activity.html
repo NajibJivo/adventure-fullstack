@@ -12,8 +12,6 @@
       <h1>AdventureXP</h1>
       <nav class="admin-nav">
         <a href="activity.html" class="active">Aktiviteter</a>
-        <a href="booking.html">Bookinger</a>
-        <a href="admin-products.html">Butik</a>
       </nav>
     </header>
 
@@ -21,7 +19,7 @@
          Vi starter med en formular hvor alle felter er med. -->
     <!-- Skjult id-felt: tomt = opret, udfyldt = rediger -->
     <section class="admin-panel">
-      <h2>Opret aktivitet</h2>
+      <h2>Rediger aktivitet</h2>
       <form id="activity-form">
         <input type="hidden" id="id" name="id" />
 
@@ -100,17 +98,7 @@
       </form>
     </section>
 
-    <!-- HOVEDINDHOLD -->
-    <div class="container">
-      <h2 class="page-title">Oversigt Over Events</h2>
-
-      <!-- HER INDSÆTTES AKTIVITETERNE DYNAMISK -->
-      <div id="activities-container" class="activities-grid">
-        <div class="loading">Indlæser aktiviteter...</div>
-      </div>
-    </div>
-
     <!-- Script skal stå sidst så JS kan finde elementerne -->
-    <script src="activity.js"></script>
+    <script src="edit-activity.js"></script>
   </body>
 </html>
