@@ -16,6 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * BookingService – indeholder forretningslogik for CRUD på Booking.
+ * Kaldes fra controllerlaget og orkestrerer opslag/validering mod repositories.
+ */
 @Service
 public class BookingService {
     private final BookingRepository bookingRepo;
@@ -33,6 +37,7 @@ public class BookingService {
     /** CREATE **/
     @Transactional
     public BookingResponse create(BookingRequest req) {
+        validateCreate(req); // aktiver validering ✔
         Activity activity = activityRepo.findById(req.activityId())
                 .orElseThrow(()
                         -> new IllegalArgumentException("Activity not found: " + req.activityId()));
@@ -127,8 +132,10 @@ public class BookingService {
         }
     }
 
+    /**
+    * Sikrer at tidspunktet er nu eller frem i tiden.
+    **/
     private void requireFutureOrNow(LocalDateTime dt, String field) {
-        // Drop denne hvis historiske bookinger skal være lovlige
         if (dt.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException(field + " must be in the future or now");
         }

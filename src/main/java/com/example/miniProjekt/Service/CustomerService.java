@@ -8,7 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+/**
+ * CustomerService – forretningslogik for CRUD på Customer.
+ * Indeholder bl.a. tjek for unik e-mail før oprettelse/opdatering.
+ */
 @Service
 public class CustomerService {
     private final CustomerRepository repo;
@@ -20,7 +23,7 @@ public class CustomerService {
     @Transactional
     public CustomerResponse create(CustomerRequest req) {
         if (repo.existsByEmail(req.email())) {
-            throw new IllegalArgumentException("Email already in use: " + req.email());
+            throw new IllegalArgumentException("E-mail already in use: " + req.email());
         }
         Customer c = new Customer();
         c.setName(req.name());
@@ -67,7 +70,8 @@ public class CustomerService {
         repo.deleteById(id);
     }
 
-    private CustomerResponse toResponse(Customer c) {
+    /** Mapper Customer-entity til CustomerResponse DTO. **/
+     private CustomerResponse toResponse(Customer c) {
         return new CustomerResponse(c.getId(), c.getName(), c.getPhone(), c.getEmail(), c.getUserRole());
     }
 }
