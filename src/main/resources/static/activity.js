@@ -59,7 +59,7 @@ const api = {
 };
 
 // --- Hjælpere ---
-// Hvorfor: Ensartet visning af datoer/priser; centraliseret formattering.
+// Hvorfor: Ensartet visning af datoer/priser; centraliseret formattering
 function formatDateTime(s) {
   if (!s) return "Ikke angivet";
   const d = new Date(s);
