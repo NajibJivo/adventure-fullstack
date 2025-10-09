@@ -10,6 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * ProductService – forretningslogik for CRUD på Product.
+ * Håndhæver bl.a. unikhed på navn og simple feltvalideringer (name/price/isActive).
+ */
 @Service
 public class ProductService {
     private final ProductRepository repo;
