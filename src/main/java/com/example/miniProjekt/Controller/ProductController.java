@@ -1,55 +1,57 @@
 package com.example.miniProjekt.controller;
 
-import com.example.miniProjekt.model.Product;
-import com.example.miniProjekt.service.ProductService;
+import com.example.miniProjekt.service.ProductServiceDto;
+import com.example.miniProjekt.web.dto.ProductRequest;
+import com.example.miniProjekt.web.dto.ProductResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 /**
  * ProductController – REST-endpoints for CRUD på produkter.
  * Sender/returnerer hele Product-objekter (ingen DTO endnu).
  */
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/api/product")
 public class ProductController {
-    private final ProductService service;
+    private final ProductServiceDto service;
 
-    public ProductController(ProductService service) {
+    public ProductController(ProductServiceDto service) {
         this.service = service;
     }
 
     /** READ ALL **/
     @GetMapping
-    public List<Product> getAll() {
-        return service.findAll();
+    public Page<ProductResponse> list(@PageableDefault(size = 20, sort = "name") Pageable pageable) {
+        return service.list(pageable);
     }
 
     /** READ BY ID **/
     @GetMapping("/{id}")
-    public Product getOne(@PathVariable Long id) {
+    public ProductResponse getOne(@PathVariable Long id) {
         return service.getByIdOrThrow(id);
     }
 
     /** CREATE **/
     @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product input) {
-        Product saved = service.create(input);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
+    public ResponseEntity<ProductResponse> create(@RequestBody ProductRequest req) {
+        ProductResponse saved = service.create(req);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(saved.getId())
+                .buildAndExpand(saved.id())
                 .toUri();
         return ResponseEntity.created(location).body(saved);
     }
 
     /** UPDATE **/
     @PutMapping("/{id}")
-    public Product update(@PathVariable Long id, @RequestBody Product input) {
-        return service.update(id, input);
+    public ProductResponse update(@PathVariable Long id, @RequestBody ProductRequest req) {
+        return service.update(id, req);
     }
 
     /** DELETE **/
