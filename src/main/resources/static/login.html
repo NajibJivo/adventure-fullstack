@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log ind - AdventureXP</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<header class="header">
+    <h1>AdventureXP</h1>
+</header>
+
+<div class="auth-container">
+    <div class="auth-header">
+        <h2>Log ind</h2>
+        <p>Velkommen tilbage!</p>
+    </div>
+
+    <div id="error-msg" class="error-msg"></div>
+    <div id="logout-msg" class="success-msg"></div>
+
+    <form class="auth-form" action="/perform_login" method="post">
+        <div class="form-group">
+            <label for="username">Brugernavn</label>
+            <input type="text" id="username" name="username" required autofocus>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Adgangskode</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn-auth">Log ind</button>
+    </form>
+
+    <div class="auth-link">
+        Har du ikke en konto? <a href="signup.html">Opret bruger</a>
+    </div>
+
+    <div class="test-users">
+        <h3>🔑 Test brugere</h3>
+        <p><strong>Admin:</strong> <code>admin</code> / <code>admin123</code></p>
+        <p><strong>Kunde:</strong> <code>kunde</code> / <code>kunde123</code></p>
+    </div>
+</div>
+
+<script src="login.js"></script>
+</body>
+</html>
