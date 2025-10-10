@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opret bruger - AdventureXP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header">
+    <h1>AdventureXP</h1>
+</header>
+
+<div class="auth-container">
+    <div class="auth-header">
+        <h2>Opret bruger</h2>
+        <p>Kom i gang med AdventureXP</p>
+    </div>
+
+    <div id="error-msg" class="error-msg"></div>
+    <div id="success-msg" class="success-msg"></div>
+
+    <form class="auth-form" id="signup-form">
+        <div class="form-group">
+            <label for="name">Fulde navn *</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Telefon</label>
+            <input type="tel" id="phone" name="phone" placeholder="12345678">
+        </div>
+
+        <div class="form-group">
+            <label for="username">Brugernavn *</label>
+            <input type="text" id="username" name="username" required minlength="3">
+            <small>Minimum 3 tegn</small>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Adgangskode *</label>
+            <input type="password" id="password" name="password" required minlength="6">
+            <small>Minimum 6 tegn</small>
+        </div>
+
+        <div class="form-group">
+            <label for="confirm-password">Gentag adgangskode *</label>
+            <input type="password" id="confirm-password" name="confirm-password" required>
+        </div>
+
+        <button type="submit" class="btn-auth" id="submit-btn">Opret bruger</button>
+    </form>
+
+    <div class="auth-link">
+        Har du allerede en konto? <a href="login.html">Log ind</a>
+    </div>
+</div>
+
+<script src="signup.js"></script>
+</body>
+</html>
