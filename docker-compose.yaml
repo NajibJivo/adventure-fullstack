@@ -10,7 +10,10 @@ services:                                 # Alle containere i dette projekt
       MYSQL_PASSWORD: apppassword         # App-brugerens password
     volumes:                              # Persistér data lokalt (over container-liv)
       - mysql_data:/var/lib/mysql         # Navngivet volume til MySQL data
-     # - ./initData.sql:/docker-entrypoint-initdb.d/initData.sql
+      # - ./initData.sql:/docker-entrypoint-initdb.d/initData.sql
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro   # <-- Slank MySQL-konfig (NY)
+    # mem_limit er valgfri; hjælper med at holde forbruget nede
+    mem_limit: 1g                         # <-- Cap RAM, så OOM er mindre sandsynlig (NY)
     networks:
       - adventurexp-net                   # Privat netværk mellem services
     healthcheck:                          # Vent til DB svarer før app starter
@@ -38,6 +41,8 @@ services:                                 # Alle containere i dette projekt
     depends_on:
       mysql:
         condition: service_healthy        # Start først når MySQL er “healthy”
+    # Memory-cap i compose, app’en bruger sjældent meget RAM, men det er god praksis
+    mem_limit: 512m                       # <-- (NY)
     networks:
       - adventurexp-net                   # Del samme netværk som MySQL
 

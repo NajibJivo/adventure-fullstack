@@ -14,7 +14,8 @@ import java.net.URI;
 
 /**
  * ProductController – REST-endpoints for CRUD på produkter.
- * Sender/returnerer hele Product-objekter (ingen DTO endnu).
+ * Sender/returnerer udelukkende DTO'er.
+ * API-kontrakt; DTO’er giver frihed til at ændre domain-modeller uden at bryde klienter.
  */
 @RestController
 @RequestMapping("/api/product")
@@ -34,7 +35,7 @@ public class ProductController {
     /** READ BY ID **/
     @GetMapping("/{id}")
     public ProductResponse getOne(@PathVariable Long id) {
-        return service.getByIdOrThrow(id);
+        return service.get(id);
     }
 
     /** CREATE **/

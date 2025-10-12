@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface SaleLineRepository extends JpaRepository<SaleLine, Long> {
     List<SaleLine> findBySale_Id(Long saleId);
     boolean existsBySale_IdAndProduct_Id(Long saleId, Long productId);
-    void deleteBySale_IdAndProduct_Id(Long saleId, Long productId);
     Optional<SaleLine> findBySale_IdAndProduct_Id(Long saleId, Long productId);
-
+    void deleteBySale_IdAndProduct_Id(Long saleId, Long productId);
 }

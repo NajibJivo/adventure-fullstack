@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class SaleLine {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "sale_line_id")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne(optional = false) @JoinColumn(name = "sale_id")

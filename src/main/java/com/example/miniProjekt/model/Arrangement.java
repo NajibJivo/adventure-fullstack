@@ -9,22 +9,22 @@ import java.time.LocalDateTime;
 public class Arrangement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "arrangement_id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "arrangement_name", length = 120, nullable = false)
+    @Column(name = "title", length = 120, nullable = false)
     private String name;
 
-    @Column(name = "start_datetime", nullable = false)
+    @Column(name = "event_date", nullable = false)
     private LocalDateTime startDateTime;
 
-    @Column(name = "participants", nullable = false)
-    private int participants;
+    @Column(name = "max_participants", nullable = false)
+    private Integer participants;
 
     public Arrangement() {
     }
 
-    public Arrangement(String name, LocalDateTime startDateTime, int participants) {
+    public Arrangement(String name, LocalDateTime startDateTime, Integer participants) {
         this.name = name;
         this.startDateTime = startDateTime;
         this.participants = participants;
@@ -54,11 +54,11 @@ public class Arrangement {
         this.name = name;
     }
 
-    public int getParticipants() {
+    public Integer getParticipants() {
         return participants;
     }
 
-    public void setParticipants(int participants) {
+    public void setParticipants(Integer participants) {
         this.participants = participants;
     }
 }

@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS activity (
 
 -- CUSTOMER
 CREATE TABLE IF NOT EXISTS customer (
-                                        id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-                                        name        VARCHAR(120)    NOT NULL,
+    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name        VARCHAR(120)    NOT NULL,
     phone       VARCHAR(100)    NULL,
     email       VARCHAR(120)    NOT NULL UNIQUE,
     username    VARCHAR(50)     UNIQUE,           -- ✅ TILFØJ
@@ -81,8 +81,9 @@ CREATE TABLE IF NOT EXISTS arrangement(
     id           BIGINT PRIMARY KEY AUTO_INCREMENT,
     customer_id  BIGINT        NOT NULL,
     title        VARCHAR(200)  NOT NULL,
-    event_date   DATE          NOT NULL,
+    event_date   DATETIME          NOT NULL,
     notes        TEXT          NULL,
+    max_participants INT       NULL,
     CONSTRAINT fk_arrangement_customer
     FOREIGN KEY (customer_id) REFERENCES customer(id)
     ON DELETE RESTRICT ON UPDATE CASCADE
@@ -148,10 +149,11 @@ CREATE INDEX idx_saleline_sale
 
 -- Roster (vagtplan pr. medarbejder (customer.role = 'EMPLOYEE'))
 CREATE TABLE IF NOT EXISTS roster(
-    id           BIGINT PRIMARY KEY AUTO_INCREMENT,
-    employee_id  BIGINT       NOT NULL,  -- FK til customer (rolle = EMPLOYEE)
-    work_date    DATE         NOT NULL,
-    note         VARCHAR(200) NULL,
+    id              BIGINT PRIMARY KEY AUTO_INCREMENT,
+    employee_id     BIGINT       NOT NULL,  -- FK til customer (rolle = EMPLOYEE)
+    work_date       DATE         NOT NULL,
+    note            VARCHAR(200) NULL,
+    instructor_name VARCHAR(100) NULL,
     CONSTRAINT fk_roster_employee
     FOREIGN KEY (employee_id) REFERENCES customer(id)
     ON DELETE RESTRICT ON UPDATE CASCADE,

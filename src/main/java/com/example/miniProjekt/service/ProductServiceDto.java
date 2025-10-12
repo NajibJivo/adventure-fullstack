@@ -47,6 +47,7 @@ public class ProductServiceDto {
         return repo.findAll(pageable).map(this::toResponse);
     }
 
+    /** Bro-metode til domænelaget: hent entity eller kast 404/400 */
     public Product getEntityByIdOrThrow(Long id) {
         return repo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
     }
@@ -103,5 +104,22 @@ public class ProductServiceDto {
 
     private ProductResponse toResponse(Product p) {
         return new ProductResponse(p.getId(), p.getName(), p.getPrice(), p.getIsActive());
+    }
+
+
+    /**
+     * Hent et produkt som DTO.
+     * Lag-grænse: Denne metode er til WEB/API-laget og returnerer en ProductResponse.
+     * Domænelogik der har brug for en entity skal bruge getEntityByIdOrThrow(id).
+     *
+     * @param id produktets id (må ikke være null)
+     * @return ProductResponse for det angivne id
+     * @throws ProductNotFoundException hvis produktet ikke findes
+     */
+    @Transactional(readOnly = true)
+    public ProductResponse get(Long id) {
+        Product p = repo.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+        return toResponse(p);
     }
 }

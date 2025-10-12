@@ -19,7 +19,7 @@ public class Roster {
 
     // Valgfrit i ERD'en, men feltet findes: FK til Customer
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "employee_id")
     private Customer customer;
 
     public Roster() {

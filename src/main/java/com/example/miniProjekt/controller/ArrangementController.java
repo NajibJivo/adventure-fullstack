@@ -18,14 +18,10 @@ public class ArrangementController {
         this.service = service;
     }
 
-    @GetMapping
-    public List<Arrangement> findAll() {
-        return service.findAll();
-    }
 
     /** READ ALL **/
     @GetMapping
-    public List<Arrangement> getAll() { return service.findAll(); }
+    public List<Arrangement> getAll() { return service.findAll();  }
 
     /** READ BY ID **/
     @GetMapping("/{id}")
