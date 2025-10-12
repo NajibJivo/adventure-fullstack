@@ -47,9 +47,8 @@ public class ProductServiceDto {
         return repo.findAll(pageable).map(this::toResponse);
     }
 
-    public ProductResponse getByIdOrThrow(Long id) {
-        return repo.findById(id).map(this::toResponse)
-                .orElseThrow(() -> new ProductNotFoundException(id));
+    public Product getEntityByIdOrThrow(Long id) {
+        return repo.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     /** UPDATE -> DTO **/

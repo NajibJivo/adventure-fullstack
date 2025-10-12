@@ -2,6 +2,7 @@ package com.example.miniProjekt.service;
 
 import com.example.miniProjekt.model.Customer;
 import com.example.miniProjekt.repository.CustomerRepository;
+import com.example.miniProjekt.service.exceptions.CustomerNotFoundException;
 import com.example.miniProjekt.web.dto.CustomerRequest;
 import com.example.miniProjekt.web.dto.CustomerResponse;
 import org.springframework.stereotype.Service;
@@ -73,5 +74,9 @@ public class CustomerService {
     /** Mapper Customer-entity til CustomerResponse DTO. **/
      private CustomerResponse toResponse(Customer c) {
         return new CustomerResponse(c.getId(), c.getName(), c.getPhone(), c.getEmail(), c.getUserRole());
+    }
+
+    public Customer getByIdOrThrow(Long id) {
+        return repo.findById(id).orElseThrow(() -> new CustomerNotFoundException(id));
     }
 }

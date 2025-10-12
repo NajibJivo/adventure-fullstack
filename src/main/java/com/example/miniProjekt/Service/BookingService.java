@@ -7,7 +7,6 @@ import com.example.miniProjekt.model.Customer;
 import com.example.miniProjekt.repository.ActivityRepository;
 import com.example.miniProjekt.repository.BookingRepository;
 import com.example.miniProjekt.repository.CustomerRepository;
-import com.example.miniProjekt.service.exceptions.BookingNotFoundException;
 import com.example.miniProjekt.web.dto.BookingRequest;
 import com.example.miniProjekt.web.dto.BookingResponse;
 import org.springframework.stereotype.Service;
@@ -25,13 +24,19 @@ public class BookingService {
     private final BookingRepository bookingRepo;
     private final ActivityRepository activityRepo;
     private final CustomerRepository customerRepo;
+    private final ActivityServiceDto activityServiceDto;
+    private final CustomerService customerService;
 
     public BookingService(BookingRepository bookingRepo,
                           ActivityRepository activityRepo,
-                          CustomerRepository customerRepo) {
+                          CustomerRepository customerRepo,
+                          ActivityServiceDto activityServiceDto,
+                          CustomerService customerService) {
         this.bookingRepo = bookingRepo;
         this.activityRepo = activityRepo;
         this.customerRepo = customerRepo;
+        this.activityServiceDto = activityServiceDto;
+        this.customerService = customerService;
     }
 
     /** CREATE **/
@@ -48,7 +53,7 @@ public class BookingService {
         Booking b = new Booking();
         b.setActivity(activity);
         b.setCustomer(customer);
-        b.setStartDatetime(req.startDatetime());
+        b.setStartDateTime(req.startDatetime());
         b.setParticipants(req.participants());
         b.setInstructorName(req.instructorName());
         b.setBookingStatus(req.bookingStatus() == null ? BookingStatus.PENDING : req.bookingStatus());
@@ -85,7 +90,7 @@ public class BookingService {
             b.setCustomer(customerRepo.findById(req.customerId())
                  .orElseThrow(() -> new IllegalArgumentException("Customer not found: " + req.customerId())));
         }
-        if(req.startDatetime()!=null){b.setStartDatetime(req.startDatetime());}
+        if(req.startDatetime()!=null){b.setStartDateTime(req.startDatetime());}
         if(req.participants() != null) {b.setParticipants(req.participants());}
         if(req.instructorName() != null) {b.setInstructorName(req.instructorName());}
         if(req.bookingStatus() != null) {b.setBookingStatus(req.bookingStatus());}
@@ -102,19 +107,13 @@ public class BookingService {
         bookingRepo.deleteById(id);
     }
 
-
-    /** Helper: 404 or entity **/
-    public Booking getByIdOrThrow(Long id) {
-        return bookingRepo.findById(id).orElseThrow(() -> new BookingNotFoundException(id));
-    }
-
     /** Mapping **/
     private BookingResponse toResponse(Booking booking) {
         return new BookingResponse(
                 booking.getId(),
                 booking.getActivity().getId(),
                 booking.getCustomer().getId(),
-                booking.getStartDatetime(),
+                booking.getStartDateTime(),
                 booking.getParticipants(),
                 booking.getBookingStatus(),
                 booking.getInstructorName()
@@ -139,5 +138,61 @@ public class BookingService {
         if (dt.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException(field + " must be in the future or now");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Booking getByIdOrThrow(Long id) {
+        return bookingRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found: id=" + id));
+    }
+
+    /** Queries: fleksibel filtrering */
+    @Transactional(readOnly = true)
+    public List<BookingResponse> search(LocalDateTime from, LocalDateTime to,
+                                Long activityId, Long customerId, BookingStatus status) {
+        List<Booking> base = (from != null && to != null)
+                ? bookingRepo.findByStartDateTimeBetween(from, to)
+                : bookingRepo.findAll();
+
+        return base.stream()
+                .filter(b -> activityId == null || (b.getActivity() != null && activityId.equals(b.getActivity().getId())))
+                .filter(b -> customerId == null || (b.getCustomer() != null && customerId.equals(b.getCustomer().getId())))
+                .filter(b -> status == null || status.equals(b.getBookingStatus()))
+                .map(this::toResponse)
+                .toList();
+    }
+
+    /** Cancel: sæt status = CANCELLED */
+    @Transactional
+    public BookingResponse cancel(Long id) {
+        Booking b = getByIdOrThrow(id);
+        b.setBookingStatus(BookingStatus.CANCELLED);
+        return toResponse(bookingRepo.save(b));
+    }
+
+    /** Edit: opdater start, participants, activity/customer (valgfrit) */
+    @Transactional
+    public BookingResponse edit(Long id, LocalDateTime newStart,
+                        Integer newParticipants, Long newActivityId, Long newCustomerId) {
+
+        Booking b = getByIdOrThrow(id);
+
+        if (newStart != null) {
+            // evt. forretningsregel: tjek ikke-fortid, overlap, osv.
+            b.setStartDateTime(newStart);
+        }
+        if (newParticipants != null) {
+            if (newParticipants <= 0) throw new IllegalArgumentException("participants must be > 0");
+            b.setParticipants(newParticipants);
+        }
+        if (newActivityId != null) {
+            Activity a = activityServiceDto.getByIdOrThrow(newActivityId);
+            b.setActivity(a);
+        }
+        if (newCustomerId != null) {
+            Customer c = customerService.getByIdOrThrow(newCustomerId);
+            b.setCustomer(c);
+        }
+        return toResponse(bookingRepo.save(b));
     }
 }

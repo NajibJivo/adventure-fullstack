@@ -21,7 +21,7 @@ public class Booking {
     private Customer customer;
 
     @Column(name = "start_datetime", nullable = false)
-    private LocalDateTime startDatetime;
+    private LocalDateTime startDateTime;
 
     @Column(name = "participants", nullable = false)
     private Integer participants;
@@ -36,12 +36,12 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(Long id, Activity activity, Customer customer, LocalDateTime startDatetime,
+    public Booking(Long id, Activity activity, Customer customer, LocalDateTime startDateTime,
                    Integer participants, BookingStatus bookingStatus, String instructorName) {
         this.id = id;
         this.activity = activity;
         this.customer = customer;
-        this.startDatetime = startDatetime;
+        this.startDateTime = startDateTime;
         this.participants = participants;
         this.bookingStatus = bookingStatus;
         this.instructorName = instructorName;
@@ -71,12 +71,12 @@ public class Booking {
         this.customer = customer;
     }
 
-    public LocalDateTime getStartDatetime() {
-        return startDatetime;
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
 
-    public void setStartDatetime(LocalDateTime startDatetime) {
-        this.startDatetime = startDatetime;
+    public void setStartDateTime(LocalDateTime startDatetime) {
+        this.startDateTime = startDatetime;
     }
 
     public Integer getParticipants() {
