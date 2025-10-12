@@ -17,6 +17,12 @@ public class Customer {
 
     @Column(name="email", nullable = false, unique = true, length = 120)
     private String email;
+    @Column(name="username", unique = true, length = 50)
+    private String username;
+
+    @Column(name="password", length = 255)
+    private String password;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name="user_role", nullable = false)
@@ -32,6 +38,15 @@ public class Customer {
         this.email = email;
         this.userRole = userRole;
     }
+    public Customer(String name, String phone, String email, String username, String password, UserRole userRole) {
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.userRole = userRole;
+    }
+
 
     public Long getId() {
         return id;
@@ -71,5 +86,20 @@ public class Customer {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

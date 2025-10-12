@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdventureXP</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .welcome-section {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        .welcome-section h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: var(--brown-text);
+        }
+        .welcome-section p {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            color: var(--brown-medium);
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        .cta-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+        }
+        .cta-btn-primary {
+            background: var(--brown-text);
+            color: white;
+        }
+        .cta-btn-secondary {
+            background: var(--gold-accent);
+            color: white;
+        }
+        .cta-btn:hover {
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <h1>AdventureXP</h1>
+</header>
+
+<div class="container">
+    <div class="welcome-section">
+        <h2>Velkommen til AdventureXP</h2>
+        <p>Oplev spændende aktiviteter og uforglemmelige oplevelser</p>
+
+        <div class="cta-buttons">
+            <a href="activity.html" class="cta-btn cta-btn-primary">Se Aktiviteter</a>
+            <a href="login.html" class="cta-btn cta-btn-secondary">Log ind</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

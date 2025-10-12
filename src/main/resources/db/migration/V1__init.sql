@@ -16,12 +16,16 @@ CREATE TABLE IF NOT EXISTS activity (
 
 -- CUSTOMER
 CREATE TABLE IF NOT EXISTS customer (
-    id    BIGINT PRIMARY  KEY AUTO_INCREMENT,
-    name            VARCHAR(120)    NOT NULL,
-    phone           VARCHAR(100)    NULL,
-    email           VARCHAR(120)    NOT NULL UNIQUE,
-    user_role  ENUM('CUSTOMER', 'EMPLOYEE', 'OWNER') NOT NULL
-);
+                                        id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                        name        VARCHAR(120)    NOT NULL,
+    phone       VARCHAR(100)    NULL,
+    email       VARCHAR(120)    NOT NULL UNIQUE,
+    username    VARCHAR(50)     UNIQUE,           -- ✅ TILFØJ
+    password    VARCHAR(255),                     -- ✅ TILFØJ
+    user_role   ENUM('CUSTOMER', 'EMPLOYEE', 'OWNER') NOT NULL
+    );
+
+CREATE INDEX idx_customer_username ON customer(username);
 
 -- Equipment
 CREATE TABLE IF NOT EXISTS equipment (

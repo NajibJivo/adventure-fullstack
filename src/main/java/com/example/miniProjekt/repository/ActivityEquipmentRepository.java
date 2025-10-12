@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface ActivityEquipmentRepository extends JpaRepository<ActivityEquipment, ActivityEquipmentId> {
     List<ActivityEquipment> findByActivity_Id(Long activityId);
-    List<ActivityEquipment> findByEquipment_Id(Long equipmentId);
     boolean existsByActivity_IdAndEquipment_Id(Long activityId, Long equipmentId);
     void deleteByActivity_IdAndEquipment_Id(Long activityId, Long equipmentId);
 }
