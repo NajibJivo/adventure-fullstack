@@ -1,11 +1,13 @@
 package com.example.miniProjekt.repository;
 
 import com.example.miniProjekt.model.Booking;
+import com.example.miniProjekt.model.BookingStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 
 /**
  * BookingRepository – dataadgang for Booking-entity.
@@ -13,6 +15,11 @@ import java.util.List;
  */
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findByActivity_IdAndStartDatetimeBetween(Long activityId,
-                                                           LocalDateTime from, LocalDateTime to);
+    List<Booking> findByStartDateTimeBetween(LocalDateTime from, LocalDateTime to);
+
+    List<Booking> findByActivity_Id(Long activityId);
+
+    List<Booking> findByCustomer_Id(Long customerId);
+
+    List<Booking> findByBookingStatus(BookingStatus status);
 }

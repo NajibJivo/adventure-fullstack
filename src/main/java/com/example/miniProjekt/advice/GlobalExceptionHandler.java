@@ -4,6 +4,7 @@ import com.example.miniProjekt.service.exceptions.ActivityNotFoundException;
 import com.example.miniProjekt.service.exceptions.BookingNotFoundException;
 import com.example.miniProjekt.service.exceptions.CustomerNotFoundException;
 import com.example.miniProjekt.service.exceptions.ProductNotFoundException;
+import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
