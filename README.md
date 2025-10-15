@@ -52,7 +52,7 @@ docker compose down
   - Server: `mysql`
   - Username: `appuser`
   - Password: `apppassword`
-  - Database: `adventurepark`
+  - Database: `adventurexp`
 
 ### Nyttige Kommandoer
 ```bash
