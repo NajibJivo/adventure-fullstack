@@ -1,54 +1,105 @@
-services:                                 # Alle containere i dette projekt
-  mysql:                                  # MySQL-databaseservice
-    image: mysql:8.0                      # Officiel MySQL 8-image
-    container_name: adventurexp-mysql     # Navn på containeren (nemmere i logs/ps)
-    restart: unless-stopped               # Genstart hvis den stopper uventet
-    environment:                          # Init-bruger/DB credentials
-      MYSQL_ROOT_PASSWORD: rootpassword   # Root password (kun til lokal dev)
-      MYSQL_DATABASE: adventurexp          # Opret denne database ved opstart
-      MYSQL_USER: appuser                 # App-bruger (ikke-root)
-      MYSQL_PASSWORD: apppassword         # App-brugerens password
-    volumes:                              # Persistér data lokalt (over container-liv)
-      - mysql_data:/var/lib/mysql         # Navngivet volume til MySQL data
-      # - ./initData.sql:/docker-entrypoint-initdb.d/initData.sql
-      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro   # <-- Slank MySQL-konfig (NY)
-    # mem_limit er valgfri; hjælper med at holde forbruget nede
-    mem_limit: 1g                         # <-- Cap RAM, så OOM er mindre sandsynlig (NY)
-    networks:
-      - adventurexp-net                   # Privat netværk mellem services
-    healthcheck:                          # Vent til DB svarer før app starter
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-prootpassword"]
-      interval: 5s                        # Hvor ofte healthcheck køres
-      timeout: 3s                         # Hvor længe vi venter på svar
-      retries: 30                         # Hvor mange forsøg før “unhealthy”
-      start_period: 20s                   # “Grace period” ved kold start
+# Alle containere i projektet
+services:
 
-  app:                                    # Spring Boot-applikationen
-    build: .                              # Byg Docker image fra Dockerfile i projektroden
-    container_name: adventurexp-app       # Navn på app-container
-    restart: unless-stopped               # Genstart hvis den dør
+  # MySQL database
+  mysql:
+    # Brug officiel MySQL 8
+    image: mysql:8.0
+    # Giv containeren et tydeligt navn
+    container_name: adventurexp-mysql
+    # Genstart automatisk ved crash
+    restart: unless-stopped
+
+    # Initielle credentials og DB-navn
+    environment:
+      # Root-adgang (kun lokalt)
+      MYSQL_ROOT_PASSWORD: rootpassword
+      # Opret denne database ved start
+      MYSQL_DATABASE: adventurexp
+      # App-bruger (ikke-root)
+      MYSQL_USER: appuser
+      # App-brugerens password
+      MYSQL_PASSWORD: apppassword
+
+    # Vedvarende lagring og custom config
+    volumes:
+      # Gem DB-data uden for containeren
+      - mysql_data:/var/lib/mysql
+      # Indlæs egen MySQL-konfiguration (read-only)
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+
+    # Begræns RAM-forbrug
+    mem_limit: 1g
+
+    # Internt netværk mellem services
+    networks:
+      - adventurexp-net
+
+    # Vent til databasen svarer før andre services starter
+    healthcheck:
+      # Ping MySQL som readiness-tjek
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-prootpassword"]
+      # Kør tjek hvert 5. sekund
+      interval: 5s
+      # Maks ventetid pr. tjek
+      timeout: 3s
+      # Antal forsøg før "unhealthy"
+      retries: 30
+      # Ekstra tid efter kold start
+      start_period: 20s
+
+  # Spring Boot applikation
+  app:
+    # Byg image fra Dockerfile i projektroden
+    build: .
+    # Navn på app-containeren
+    container_name: adventurexp-app
+    # Genstart automatisk ved crash
+    restart: unless-stopped
+
+    # Eksponér HTTP-port til host
     ports:
-      - "8080:8080"                       # Eksponér app på hostens port 8080
-    environment:                          # Spring-konfiguration via env vars
-      SPRING_PROFILES_ACTIVE: docker      # Brug evt. application-docker.properties
+      # Host 8080 -> Container 8080
+      - "8080:8080"
+
+    # Spring-konfiguration via env vars
+    environment:
+      # Brug docker-profilen
+      SPRING_PROFILES_ACTIVE: docker
+      # JDBC URL (host = service-navnet "mysql")
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/adventurexp?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      # JDBC URL—'mysql' = service-navn som host
-      SPRING_DATASOURCE_USERNAME: appuser # Skal matche MySQL env ovenfor
+      # DB-bruger til app
+      SPRING_DATASOURCE_USERNAME: appuser
+      # DB-password til app
       SPRING_DATASOURCE_PASSWORD: apppassword
-      SPRING_JPA_HIBERNATE_DDL_AUTO: validate   # Lad Flyway styre schema, ikke Hibernate
-      SPRING_FLYWAY_ENABLED: "true"       # Sikrer Flyway kører ved opstart
-      SPRING_FLYWAY_LOCATIONS: classpath:db/migration  # Sti til migrations i jar’en
+      # Skema håndteres af Flyway (ikke auto-create)
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      # Kør Flyway ved opstart
+      SPRING_FLYWAY_ENABLED: "true"
+      # Placering af migrations i jar
+      SPRING_FLYWAY_LOCATIONS: classpath:db/migration
+
+    # Start først når MySQL er klar
     depends_on:
       mysql:
-        condition: service_healthy        # Start først når MySQL er “healthy”
-    # Memory-cap i compose, app’en bruger sjældent meget RAM, men det er god praksis
-    mem_limit: 512m                       # <-- (NY)
+        # Vent på healthcheck=healthy
+        condition: service_healthy
+
+    # Begræns RAM-forbrug for app
+    mem_limit: 512m
+
+    # Samme interne netværk som DB
     networks:
-      - adventurexp-net                   # Del samme netværk som MySQL
+      - adventurexp-net
 
+# Definér navngivet volumen til MySQL-data
 volumes:
-  mysql_data:                             # Deklaration af navngivet volumen til DB
+  # Vedvarende lager til databasefiler
+  mysql_data:
 
+# Definér privat bridge-netværk
 networks:
-  adventurexp-net:                        # Privat bridge-netværk til projektet
+  # Isoleret net mellem app og DB
+  adventurexp-net:
+    # Standard bridge-driver
     driver: bridge
