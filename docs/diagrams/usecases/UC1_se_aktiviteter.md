@@ -12,7 +12,7 @@
 ![Use Case](./usecase_adventureXP.png)
 
 
-# UC1: Se aktiviteter (Minimal)
+# UC1: Se aktiviteter
 
 **Aktør(er):** Kunde (primær) / Ansat (sekundær)  
 **Mål:** Finde en aktivitet og se detaljer/tilgængelighed  
