@@ -114,7 +114,7 @@ At levere et færdigt system, der gør AdventureXP i stand til at:
 - **Context:** [PNG](docs/diagrams/context/context.png) · [Forklaring](docs/diagrams/context/context.md)
 - **Use Case:** [PNG](docs/diagrams/usecase/usecase_adventureXP.png) · [Forklaring](docs/diagrams/usecase/usecase.md)
 - **Domænemodel:** [PNG](docs/diagrams/domain/domainmodel_adventure_mvp.png) · [Forklaring](docs/diagrams/domain/domain.md)
-- **ER-model:** [PNG](docs/diagrams/erd/erd_AdventureXP.png) · [Forklaring](docs/diagrams/erd/erd.md)
+- **ER-model:** [PNG](docs/diagrams/erd_AdventureXP.png) · [Forklaring](docs/diagrams/erd/erd.md)
 
 
 # 💼 Use Cases
