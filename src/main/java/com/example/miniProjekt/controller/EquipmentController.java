@@ -1,10 +1,11 @@
 package com.example.miniProjekt.controller;
 
-import com.example.miniProjekt.model.Equipment;
 import com.example.miniProjekt.service.EquipmentService;
+import com.example.miniProjekt.web.dto.EquipmentRequest;
+import com.example.miniProjekt.web.dto.EquipmentResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -19,33 +20,32 @@ public class EquipmentController {
     }
 
 
+    /** CREATE (201 + Location) **/
+    @PostMapping
+    public ResponseEntity<EquipmentResponse> create(@RequestBody EquipmentRequest req) {
+        var created = service.create(req);
+        return ResponseEntity.created(URI.create("api/equipment" + created.id())).body(created);
+    }
+
     /** READ ALL **/
     @GetMapping
-    public List<Equipment> getAll() { return service.findAll(); }
+    public List<EquipmentResponse> list() { return service.list(); }
 
     /** READ BY ID **/
     @GetMapping("/{id}")
-    public Equipment getById(@PathVariable Long id) { return service.getByIdOrThrow(id); }
+    public EquipmentResponse getById(@PathVariable Long id) { return service.get(id); }
 
-    /** CREATE (201 + Location) **/
-    @PostMapping
-    public ResponseEntity<Equipment> create(@RequestBody Equipment input) {
-        Equipment saved = service.create(input);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(saved.getId()).toUri();
-        return ResponseEntity.created(location).body(saved);
-    }
 
     /** UPDATE **/
     @PutMapping("/{id}")
-    public Equipment update(@PathVariable Long id, @RequestBody Equipment input) {
-        return service.update(id, input);
+    public EquipmentResponse update(@PathVariable Long id, @RequestBody EquipmentRequest req) {
+        return service.update(id, req);
     }
 
     /** DELETE (204) **/
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
         service.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }

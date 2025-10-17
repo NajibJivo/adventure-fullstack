@@ -3,10 +3,14 @@ package com.example.miniProjekt.service;
 import com.example.miniProjekt.model.Product;
 import com.example.miniProjekt.model.Sale;
 import com.example.miniProjekt.model.SaleLine;
+import com.example.miniProjekt.repository.CustomerRepository;
+import com.example.miniProjekt.repository.ProductRepository;
 import com.example.miniProjekt.repository.SaleLineRepository;
 import com.example.miniProjekt.repository.SaleRepository;
-import com.example.miniProjekt.service.exceptions.SaleNotFoundException;
-import org.springframework.dao.DataIntegrityViolationException;
+import com.example.miniProjekt.web.dto.SaleLineItemRequest;
+import com.example.miniProjekt.web.dto.SaleLineItemResponse;
+import com.example.miniProjekt.web.dto.SaleRequest;
+import com.example.miniProjekt.web.dto.SaleResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,93 +22,137 @@ import java.util.List;
 public class SaleService {
     private final SaleRepository saleRepo;
     private final SaleLineRepository lineRepo;
-    private final ProductServiceDto service;
+    private final ProductRepository productRepo;
+    private final CustomerRepository customerRepo;
 
-    public SaleService(SaleRepository saleRepo, SaleLineRepository lineRepo, ProductServiceDto service) {
+    public SaleService(SaleRepository saleRepo,
+                       SaleLineRepository lineRepo,
+                       ProductRepository productRepo,
+                       CustomerRepository customerRepo) {
         this.saleRepo = saleRepo;
         this.lineRepo = lineRepo;
-        this.service = service;
+        this.productRepo = productRepo;
+        this.customerRepo = customerRepo;
     }
 
-    /* --- READ helpers --- */
-    public Sale getByIdOrThrow(Long saleId) {
-        return saleRepo.findById(saleId).orElseThrow(() -> new SaleNotFoundException(saleId));
-    }
-
-    public List<SaleLine> listLines(Long saleId) {
-        ensureSaleExists(saleId);
-        return lineRepo.findBySale_Id(saleId);
-    }
-
-    /* --- CREATE sale --- */
+    /** CREATE **/
     @Transactional
-    public Sale createSale(LocalDateTime whenOrNull) {
-        Sale s = new Sale();
-        s.setSaleDateTime(whenOrNull != null ? whenOrNull : LocalDateTime.now());
-        return saleRepo.save(s);
-    }
+    public SaleResponse create(SaleRequest req) {
+        validateCreate(req);
 
-    /* --- ADD line --- */
-    @Transactional
-    public SaleLine addLine(Long saleId, Long productId, int quantity, BigDecimal unitPriceOrNull) {
-        if (quantity <= 0) throw new IllegalArgumentException("quantity must be > 0");
 
-        Sale sale = getByIdOrThrow(saleId);
-        Product product = service.getEntityByIdOrThrow(productId);
+        // 1) Opret Sale-head
+        Sale sale = new Sale();
+        sale.setSaleDateTime(req.saleDateTime());
+        sale = saleRepo.save(sale);
 
-        if (lineRepo.existsBySale_IdAndProduct_Id(saleId, productId)) {
-            throw new DataIntegrityViolationException("Product already in sale (use update or remove first)");
+        // 2) Opret linjer (historisk unitPrice låses fra Product)
+        for (SaleLineItemRequest li : req.lines()) {
+            Product product = productRepo.findById(li.productId())
+                    .orElseThrow(() -> new IllegalArgumentException("Product not found: " + li.productId()));
+
+            SaleLine sl = new SaleLine();
+            sl.setSale(sale);
+            sl.setProduct(product);
+            sl.setQuantity(li.quantity());
+            sl.setUnitPrice(product.getPrice()); // vigtigt: historisk pris
+            lineRepo.save(sl);
         }
 
-        BigDecimal unitPrice = (unitPriceOrNull != null) ? unitPriceOrNull : product.getPrice();
-        if (unitPrice == null) throw new IllegalArgumentException("unitPrice is required (product has no price)");
-
-        SaleLine line = new SaleLine();
-        line.setSale(sale);
-        line.setProduct(product);
-        line.setQuantity(quantity);
-        line.setUnitPrice(unitPrice);
-
-        return lineRepo.save(line);
+        // 3) Hent alt samlet og map til response
+        List<SaleLine> persisted = lineRepo.findBySaleId(sale.getId());
+        return toResponse(sale, persisted);
     }
 
-    /* --- REMOVE line --- */
-    @Transactional
-    public void removeLine(Long saleId, Long productId) {
-        ensureSaleExists(saleId);
-        lineRepo.deleteBySale_IdAndProduct_Id(saleId, productId);
-    }
-
-    /* --- TOTAL --- */
+    /** READ single **/
     @Transactional(readOnly = true)
-    public BigDecimal getTotal(Long saleId) {
-        ensureSaleExists(saleId);
-        return lineRepo.findBySale_Id(saleId).stream()
-                .map(l -> l.getUnitPrice().multiply(BigDecimal.valueOf(l.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public SaleResponse get(Long id) {
+        Sale sale = saleRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Sale not found: " + id));
+        List<SaleLine> lines = lineRepo.findBySaleId(id);
+        return toResponse(sale, lines);
     }
 
-    private void ensureSaleExists(Long saleId) {
-        if (!saleRepo.existsById(saleId)) throw new SaleNotFoundException(saleId);
+
+    /** READ all **/
+    @Transactional(readOnly = true)
+    public List<SaleResponse> list() {
+        // For performance kan man lave join fetch/DTO-query; her gør vi det enkelt og tydeligt
+        return saleRepo.findAll().stream()
+                .map(s -> toResponse(s, lineRepo.findBySaleId(s.getId())))
+                .toList();
+    }
+
+    // ---------- Mapping ----------
+
+    private SaleResponse toResponse(Sale s, List<SaleLine> lines) {
+        List<SaleLineItemResponse> dtoLines = lines.stream()
+                .map(this::toLineResponse)
+                .toList();
+
+        BigDecimal total = dtoLines.stream()
+                .map(SaleLineItemResponse::lineTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Long customerId = s.getCustomer() != null ? s.getCustomer().getId() : null;
+
+        return new SaleResponse(
+                s.getId(),
+                s.getSaleDateTime(),
+                customerId,
+                total,
+                dtoLines
+        );
+    }
+
+    private SaleLineItemResponse toLineResponse(SaleLine sl) {
+        BigDecimal lineTotal = sl.getUnitPrice().multiply(BigDecimal.valueOf(sl.getQuantity()));
+        return new SaleLineItemResponse(
+                sl.getId(),
+                sl.getProduct().getId(),
+                sl.getProduct().getName(),
+                sl.getQuantity(),
+                sl.getUnitPrice(),
+                lineTotal
+        );
+    }
+
+    // ---------- Validation ----------
+
+    private void validateCreate(SaleRequest req) {
+        if (req.saleDateTime() == null) {
+            throw new IllegalArgumentException("saleDateTime is required");
+        }
+        requirePastOrNow(req.saleDateTime(), "saleDateTime"); // salg må gerne være nu/fortid
+
+        if (req.lines() == null || req.lines().isEmpty()) {
+            throw new IllegalArgumentException("At least one line is required");
+        }
+        for (SaleLineItemRequest li : req.lines()) {
+            if (li.productId() == null) {
+                throw new IllegalArgumentException("productId is required for each line");
+            }
+            if (li.quantity() == null || li.quantity() <= 0) {
+                throw new IllegalArgumentException("quantity must be > 0");
+            }
+        }
+    }
+
+    private void requirePastOrNow(LocalDateTime dt, String field) {
+        if (dt.isAfter(LocalDateTime.now())) {
+            throw new IllegalArgumentException(field + " cannot be in the future");
+        }
     }
 
     @Transactional
-    public SaleLine updateLine(Long saleId, Long productId,
-                               Integer newQuantity, BigDecimal newUnitPrice) {
-        ensureSaleExists(saleId);
-
-        SaleLine line = lineRepo.findBySale_IdAndProduct_Id(saleId, productId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Sale line not found for saleId=" + saleId + " and productId=" + productId));
-
-        if (newQuantity != null) {
-            if (newQuantity <= 0) throw new IllegalArgumentException("quantity must be > 0");
-            line.setQuantity(newQuantity);
+    public void delete(Long id) {
+        if (!saleRepo.existsById(id)) {
+            throw new IllegalArgumentException("Sale not found: " + id);
         }
-        if (newUnitPrice != null) {
-            if (newUnitPrice.signum() <= 0) throw new IllegalArgumentException("unitPrice must be > 0");
-            line.setUnitPrice(newUnitPrice);
-        }
-        return lineRepo.save(line);
+        // Slet linjer først (hvis du ikke har cascade = ALL + orphanRemoval = true på Sale -> lines)
+        lineRepo.deleteBySaleId(id);
+
+        // Slet selve salget
+        saleRepo.deleteById(id);
     }
 }

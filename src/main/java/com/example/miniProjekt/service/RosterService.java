@@ -2,7 +2,11 @@ package com.example.miniProjekt.service;
 
 import com.example.miniProjekt.model.Customer;
 import com.example.miniProjekt.model.Roster;
+import com.example.miniProjekt.model.UserRole;
+import com.example.miniProjekt.repository.CustomerRepository;
 import com.example.miniProjekt.repository.RosterRepository;
+import com.example.miniProjekt.web.dto.RosterRequest;
+import com.example.miniProjekt.web.dto.RosterResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,62 +16,123 @@ import java.util.List;
 @Service
 public class RosterService {
     private final RosterRepository repo;
-    private final CustomerService customerService; // til  FK-assign til Customer
+    private final CustomerRepository customerRepo;
 
-    public RosterService(RosterRepository repo, CustomerService customerService) {
+    public RosterService(RosterRepository repo,
+                         CustomerRepository customerRepo) {
         this.repo = repo;
-        this.customerService = customerService;
+        this.customerRepo = customerRepo;
     }
 
-    // READ
-    public List<Roster> findAll() { return repo.findAll(); }
-    public List<Roster> findByDate(LocalDate date) { return repo.findByWorkDate(date); }
-    public List<Roster> findByRange(LocalDate from, LocalDate to) { return repo.findByWorkDateBetween(from, to); }
-    public List<Roster> findByInstructor(String name) { return repo.findByInstructorNameIgnoreCase(name); }
+    /** READ:
+     * Hent alle roster-poster
+     *  Hent roster-poster for en specifik dato.
+     *  Hent roster-poster i et datointerval (inklusive grænser).
+     * **/
+    @Transactional(readOnly = true)
+    public List<RosterResponse> findAll() {
+        return repo.findAll().stream().map(this::toResponse).toList();
+    }
 
-    // CREATE
+    @Transactional(readOnly = true)
+    public List<RosterResponse> findByDate(LocalDate date) {
+        return repo.findByWorkDate(date).stream().map(this::toResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<RosterResponse> findByRange(LocalDate from, LocalDate to) {
+        return repo.findByWorkDateBetween(from, to).stream().map(this::toResponse).toList();
+    }
+
+
+
+
+    /** CREATE **/
     @Transactional
-    public Roster create(Roster input, Long customerIdOrNull) {
-        validate(input);
-        input.setId(null);
-        if (customerIdOrNull != null) {
-            Customer c = customerService.getByIdOrThrow(customerIdOrNull);
-            input.setCustomer(c);
+    public RosterResponse create(RosterRequest req) {
+        validate(req);
+
+        Customer emp = customerRepo.findById(req.employeeId())
+                .orElseThrow(() -> new IllegalArgumentException("Employee not found: " + req.employeeId()));
+        if (emp.getUserRole() != UserRole.EMPLOYEE) {
+            throw new IllegalArgumentException("User is not an EMPLOYEE: " + req.employeeId());
         }
-        return repo.save(input);
+
+        if (repo.existsByEmployee_IdAndWorkDate(req.employeeId(), req.workDate())) {
+            throw new IllegalArgumentException("Roster already exists for employee/date");
+        }
+
+        Roster r = new Roster();
+        r.setCustomer(emp);
+        r.setWorkDate(req.workDate());
+
+
+        return toResponse(repo.save(r));
     }
 
-    // UPDATE (skift navn/dato og evt. tilknyttet kunde)
+    /** READ single **/
+    @Transactional(readOnly = true)
+    public RosterResponse get(Long id) {
+        return repo.findById(id).map(this::toResponse)
+                .orElseThrow(() -> new IllegalArgumentException("Roster not found: " + id));
+    }
+
+    /** READ all **/
+    @Transactional(readOnly = true)
+    public List<RosterResponse> list() {
+        return repo.findAll().stream().map(this::toResponse).toList();
+    }
+
+
+
+    /** UPDATE (skift navn/dato og evt. tilknyttet kunde) **/
     @Transactional
-    public Roster update(Long id, Roster input, Long customerIdOrNull) {
-        validate(input);
-        Roster existing = repo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Roster not found: id=" + id));
-        existing.setInstructorName(input.getInstructorName());
-        existing.setWorkDate(input.getWorkDate());
-        if (customerIdOrNull != null) {
-            Customer c = customerService.getByIdOrThrow(customerIdOrNull);
-            existing.setCustomer(c);
-        } else {
-            existing.setCustomer(null);
+    public RosterResponse update(Long id, RosterRequest req) {
+        Roster r = repo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Roster not found: " + id));
+
+        // Skift medarbejder (valider rolle)
+        if (req.employeeId() != null) {
+            Customer emp = customerRepo.findById(req.employeeId())
+                    .orElseThrow(() -> new IllegalArgumentException("Employee not found: " + req.employeeId()));
+            if (emp.getUserRole() != UserRole.EMPLOYEE) {
+                throw new IllegalArgumentException("User is not an EMPLOYEE: " + req.employeeId());
+            }
+            r.setCustomer(emp);
         }
-        return repo.save(existing);
+
+        if (req.workDate() != null) {
+            // Tjek unikt constraint når employee+date ændres
+            Long empId = r.getCustomer() != null ? r.getCustomer().getId() : req.employeeId();
+            Long checkEmpId = empId != null ? empId : req.employeeId();
+            if (checkEmpId != null && repo.existsByEmployee_IdAndWorkDate(checkEmpId, req.workDate())) {
+                throw new IllegalArgumentException("Roster already exists for employee/date");
+            }
+            r.setWorkDate(req.workDate());
+        }
+        return toResponse(repo.save(r));
     }
 
-    // DELETE
+    /** DELETE **/
     @Transactional
     public void delete(Long id) {
-        if (!repo.existsById(id)) throw new IllegalArgumentException("Roster not found: id=" + id);
+        if (!repo.existsById(id)) throw new IllegalArgumentException("Roster not found: " + id);
         repo.deleteById(id);
     }
 
-    private void validate(Roster r) {
-        if (r == null) throw new IllegalArgumentException("Roster is required");
-        if (r.getInstructorName() == null || r.getInstructorName().isBlank())
-            throw new IllegalArgumentException("instructorName is required");
-        if (r.getInstructorName().length() > 100)
-            throw new IllegalArgumentException("instructorName max 100 chars");
-        if (r.getWorkDate() == null)
-            throw new IllegalArgumentException("workDate is required");
+    /** --- mapping & validation --- **/
+    private RosterResponse toResponse(Roster r) {
+        return new RosterResponse(
+                r.getId(),
+                r.getCustomer().getId(),
+                r.getWorkDate()
+        );
+    }
+
+    private void validate(RosterRequest req) {
+        if (req.employeeId() == null) throw new IllegalArgumentException("employeeId is required");
+        if (req.workDate() == null) throw new IllegalArgumentException("workDate is required");
+        if (req.workDate().isBefore(LocalDate.now()))
+            throw new IllegalArgumentException("workDate must be today or in the future");
     }
 }

@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SaleLineRepository extends JpaRepository<SaleLine, Long> {
-    List<SaleLine> findBySale_Id(Long saleId);
+    List<SaleLine> findBySaleId(Long saleId);
     boolean existsBySale_IdAndProduct_Id(Long saleId, Long productId);
     Optional<SaleLine> findBySale_IdAndProduct_Id(Long saleId, Long productId);
-    void deleteBySale_IdAndProduct_Id(Long saleId, Long productId);
+    void deleteBySaleId(Long saleId); // <- til delete flowet
 }

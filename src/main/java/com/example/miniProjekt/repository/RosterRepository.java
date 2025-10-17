@@ -10,4 +10,6 @@ public interface RosterRepository extends JpaRepository<Roster, Long> {
     List<Roster> findByWorkDate(LocalDate date);
     List<Roster> findByWorkDateBetween(LocalDate from, LocalDate to);
     List<Roster> findByInstructorNameIgnoreCase(String instructorName);
+    boolean existsByEmployee_IdAndWorkDate(Long employeeId, LocalDate workDate);
+
 }
