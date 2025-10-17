@@ -10,5 +10,5 @@ import java.util.List;
 public record SaleRequest(
         LocalDateTime saleDateTime,
         Long customerId,
-        List<SaleLineItemRequest> lines
+        List<SaleLineRequest> lines
 ) {}

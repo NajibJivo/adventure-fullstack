@@ -7,7 +7,7 @@ import com.example.miniProjekt.repository.CustomerRepository;
 import com.example.miniProjekt.repository.ProductRepository;
 import com.example.miniProjekt.repository.SaleLineRepository;
 import com.example.miniProjekt.repository.SaleRepository;
-import com.example.miniProjekt.web.dto.SaleLineItemRequest;
+import com.example.miniProjekt.web.dto.SaleLineRequest;
 import com.example.miniProjekt.web.dto.SaleLineItemResponse;
 import com.example.miniProjekt.web.dto.SaleRequest;
 import com.example.miniProjekt.web.dto.SaleResponse;
@@ -47,7 +47,7 @@ public class SaleService {
         sale = saleRepo.save(sale);
 
         // 2) Opret linjer (historisk unitPrice låses fra Product)
-        for (SaleLineItemRequest li : req.lines()) {
+        for (SaleLineRequest li : req.lines()) {
             Product product = productRepo.findById(li.productId())
                     .orElseThrow(() -> new IllegalArgumentException("Product not found: " + li.productId()));
 
@@ -128,7 +128,7 @@ public class SaleService {
         if (req.lines() == null || req.lines().isEmpty()) {
             throw new IllegalArgumentException("At least one line is required");
         }
-        for (SaleLineItemRequest li : req.lines()) {
+        for (SaleLineRequest li : req.lines()) {
             if (li.productId() == null) {
                 throw new IllegalArgumentException("productId is required for each line");
             }

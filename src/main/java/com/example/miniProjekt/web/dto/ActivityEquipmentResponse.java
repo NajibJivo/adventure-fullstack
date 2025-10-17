@@ -2,8 +2,10 @@ package com.example.miniProjekt.web.dto;
 
 /** Bekræftelse/visning af koblingen. */
 public record ActivityEquipmentResponse(
+        Long id,
         Long activityId,
-        Long equipmentId,
         String activityName,
-        String equipmentName
+        Long equipmentId,
+        String equipmentName,
+        Integer quantity// antal af udstyret til aktiviteten (>= 1)
 ) {}

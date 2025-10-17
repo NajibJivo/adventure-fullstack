@@ -6,9 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
+
+/**
+ * Repo for sale lines. Query-navne matcher FK-felter.
+ */
 public interface SaleLineRepository extends JpaRepository<SaleLine, Long> {
+
+    /**
+     * Find alle linjer til et givent sale.
+     */
     List<SaleLine> findBySaleId(Long saleId);
-    boolean existsBySale_IdAndProduct_Id(Long saleId, Long productId);
-    Optional<SaleLine> findBySale_IdAndProduct_Id(Long saleId, Long productId);
+
+
     void deleteBySaleId(Long saleId); // <- til delete flowet
 }

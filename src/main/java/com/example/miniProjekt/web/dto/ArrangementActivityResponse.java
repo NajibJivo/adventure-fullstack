@@ -4,6 +4,5 @@ package com.example.miniProjekt.web.dto;
 public record ArrangementActivityResponse(
         Long arrangementId,
         Long activityId,
-        String arrangementTitle,
         String activityName
 ) {}
