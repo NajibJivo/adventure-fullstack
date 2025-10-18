@@ -41,13 +41,6 @@
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <!-- H2 KUN til tests -->
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Flyway migrations (best practice) -->
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -91,7 +84,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <build>

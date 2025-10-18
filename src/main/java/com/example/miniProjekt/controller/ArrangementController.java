@@ -1,14 +1,19 @@
 package com.example.miniProjekt.controller;
 
-import com.example.miniProjekt.model.Arrangement;
 import com.example.miniProjekt.service.ArrangementService;
+import com.example.miniProjekt.web.dto.ArrangementRequest;
+import com.example.miniProjekt.web.dto.ArrangementResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
 
+/**
+ * REST-controller for Arrangement.
+ * Ansvar: HTTP-kontrakt (routes, statuskoder) og delegering til service.
+ */
 @RestController
 @RequestMapping("/arrangements")
 public class ArrangementController {
@@ -18,38 +23,39 @@ public class ArrangementController {
         this.service = service;
     }
 
-
-    /** READ ALL **/
-    @GetMapping
-    public List<Arrangement> getAll() { return service.findAll();  }
-
-    /** READ BY ID **/
-    @GetMapping("/{id}")
-    public Arrangement getById(@PathVariable Long id) {
-        return service.getByIdOrThrow(id);
-    }
-
-    /** CREATE (201 + Location) **/
+    /** CREATE: POST /api/arrangements – opret nyt arrangement.
+     ** @param req input-DTO
+     * @return 201 Created + Location-header + response-DTO**/
     @PostMapping
-    public ResponseEntity<Arrangement> create(@RequestBody Arrangement input) {
-        Arrangement saved = service.create(input);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(saved.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(saved);
+    public ResponseEntity<ArrangementResponse> create(@RequestBody ArrangementRequest req) {
+        var created = service.create(req);
+        return ResponseEntity.created(URI.create("/api/arrangements/" + created.id())).body(created);
     }
 
-    /** UPDATE **/
+    /** READ BY ID: GET /api/arrangements/{id} – hent enkelt arrangement. **/
+    @GetMapping("/{id}")
+    public ArrangementResponse get(@PathVariable Long id) {
+        return service.get(id);
+    }
+
+    /** READ ALL: GET /api/arrangements – list alle arrangementer. **/
+    @GetMapping
+    public List<ArrangementResponse> list() {
+        return service.list();
+    }
+
+    /** UPDATE: PUT /api/arrangements/{id} – opdater (partial/full).
+     * Null-felter i request ignoreres.**/
     @PutMapping("/{id}")
-    public Arrangement update(@PathVariable Long id, @RequestBody Arrangement input) {
-        return service.update(id, input);
+    public ArrangementResponse update(@PathVariable Long id, @RequestBody ArrangementRequest req) {
+        return service.update(id, req);
     }
 
-    /** DELETE (204) **/
+    /** DELETE (204): /api/arrangements/{id} – slet arrangement.
+     *  Returnerer 204 No Content ved succes.**/
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
         service.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }

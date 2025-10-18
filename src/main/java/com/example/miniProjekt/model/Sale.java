@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 @Entity
 @Table(name = "sale")
 public class Sale {
@@ -14,12 +16,17 @@ public class Sale {
     @Column(name = "sale_datetime", nullable = false)
     private LocalDateTime saleDateTime;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer; // må være null
+
     public Sale() {
     }
 
-    public Sale(Long id, LocalDateTime saleDateTime) {
+    public Sale(Long id, LocalDateTime saleDateTime,  Customer customer) {
         this.id = id;
         this.saleDateTime = saleDateTime;
+        this.customer = customer;
     }
 
     public Long getId() {
@@ -36,5 +43,13 @@ public class Sale {
 
     public void setSaleDateTime(LocalDateTime saleDateTime) {
         this.saleDateTime = saleDateTime;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

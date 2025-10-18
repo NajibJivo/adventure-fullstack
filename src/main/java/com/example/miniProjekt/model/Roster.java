@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name ="roster")
+@Table(name ="roster",
+        uniqueConstraints = @UniqueConstraint(name="uq_roster_employee_day", columnNames = {"employee_id","work_date"}))
 public class Roster {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,9 +19,10 @@ public class Roster {
     private LocalDate workDate;
 
     // Valgfrit i ERD'en, men feltet findes: FK til Customer
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Customer customer;
+
 
     public Roster() {
     }

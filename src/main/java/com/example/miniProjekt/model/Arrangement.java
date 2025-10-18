@@ -9,56 +9,82 @@ import java.time.LocalDateTime;
 public class Arrangement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "customer_id", nullable = false,
+            foreignKey = @ForeignKey(name = "fk_arrangement_customer"))
+    private Customer customer;
+
     @Column(name = "title", length = 120, nullable = false)
-    private String name;
+    private String title;
 
     @Column(name = "event_date", nullable = false)
-    private LocalDateTime startDateTime;
+    private LocalDateTime eventDate;
+
+    @Column(name = "notes")
+    private String notes; // TEXT i DB
 
     @Column(name = "max_participants", nullable = false)
-    private Integer participants;
+    private Integer maxParticipants; // NULL er tilladt i ERD
 
     public Arrangement() {
     }
 
-    public Arrangement(String name, LocalDateTime startDateTime, Integer participants) {
-        this.name = name;
-        this.startDateTime = startDateTime;
-        this.participants = participants;
+    public Arrangement(Customer customer, String title, LocalDateTime eventDate,String notes,  Integer maxParticipants) {
+        this.customer = customer;
+        this.title = title;
+        this.eventDate = eventDate;
+        this.maxParticipants = maxParticipants;
+        this.notes = notes;
     }
 
+    // getters/setters
     public Long getId() {
         return id;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public LocalDateTime getStartDateTime() {
-        return startDateTime;
+    public LocalDateTime getEventDate() {
+        return eventDate;
     }
 
-    public void setStartDateTime(LocalDateTime startDateTime) {
-        this.startDateTime = startDateTime;
+    public void setEventDate(LocalDateTime eventDate) {
+        this.eventDate = eventDate;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String name) {
+        this.title = name;
     }
 
-    public Integer getParticipants() {
-        return participants;
+    public Integer getMaxParticipants() {
+        return maxParticipants;
     }
 
-    public void setParticipants(Integer participants) {
-        this.participants = participants;
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public void setMaxParticipants(Integer participants) {
+        this.maxParticipants = participants;
     }
 }

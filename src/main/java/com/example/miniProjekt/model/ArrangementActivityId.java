@@ -17,9 +17,6 @@ public class ArrangementActivityId implements Serializable {
         this.activityId = activityId;
     }
 
-    public Long getArrangementId() {
-        return arrangementId;
-    }
     public void setArrangementId(Long arrangementId) {
         this.arrangementId = arrangementId;
     }
