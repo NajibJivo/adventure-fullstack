@@ -2,7 +2,6 @@ package com.example.miniProjekt.web.dto;
 
 /** Bekræftelse/visning af koblingen. */
 public record ActivityEquipmentResponse(
-        Long id,
         Long activityId,
         String activityName,
         Long equipmentId,

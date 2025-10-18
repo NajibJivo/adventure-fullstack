@@ -1,8 +1,7 @@
 package com.example.miniProjekt.service;
 
-import com.example.miniProjekt.model.Activity;
 import com.example.miniProjekt.model.ActivityEquipment;
-import com.example.miniProjekt.model.Equipment;
+import com.example.miniProjekt.model.ActivityEquipmentId;
 import com.example.miniProjekt.repository.ActivityEquipmentRepository;
 import com.example.miniProjekt.repository.ActivityRepository;
 import com.example.miniProjekt.repository.EquipmentRepository;
@@ -33,48 +32,53 @@ public class ActivityEquipmentService {
         this.equipmentRepo = equipmentRepo;
     }
 
+    private ActivityEquipmentId aeId(Long activityId, Long equipmentId) {
+        return new ActivityEquipmentId(activityId, equipmentId);
+    }
+
     /**
-     * Opretter en kobling mellem en aktivitet og et stykke udstyr.
-     * Validerer input, sikrer at Activity/Equipment findes,
-     * og at der ikke oprettes duplikat-koblinger.
+     * Opretter kobling; fejler hvis den allerede findes.
+     *
+     * @param req activityId, equipmentId, quantity
+     * @return oprettet kobling
+     * @throws IllegalArgumentException hvis activity/equipment mangler eller quantity <= 0
      */
     @Transactional
     public ActivityEquipmentResponse create(ActivityEquipmentRequest req) {
         validate(req);
 
-        Activity activity = activityRepo.findById(req.activityId())
+        var activity  = activityRepo.findById(req.activityId())
                 .orElseThrow(() -> new IllegalArgumentException("Activity not found: " + req.activityId()));
-        Equipment equipment = equipmentRepo.findById(req.equipmentId())
+        var equipment = equipmentRepo.findById(req.equipmentId())
                 .orElseThrow(() -> new IllegalArgumentException("Equipment not found: " + req.equipmentId()));
 
-        // Undgå at samme (activity,equipment) oprettes to gange
         if (repo.existsByActivity_IdAndEquipment_Id(req.activityId(), req.equipmentId())) {
-            throw new IllegalArgumentException("ActivityEquipment already exists for activityId="
+            throw new IllegalArgumentException("Relation already exists for activityId="
                     + req.activityId() + " and equipmentId=" + req.equipmentId());
         }
 
-        ActivityEquipment ae = new ActivityEquipment();
-        ae.setActivity(activity);
-        ae.setEquipment(equipment);
-        ae.setQuantity(req.quantity());
-
+        var ae = new ActivityEquipment(activity, equipment, req.quantity());
+        // settere holder EmbeddedId i sync
         return toResponse(repo.save(ae));
     }
 
-    /**
-     * Henter en enkelt relation på id.
-     *
-     * @throws IllegalArgumentException hvis relationen ikke findes
-     */
-    @Transactional(readOnly = true)
-    public ActivityEquipmentResponse get(Long id) {
-        return repo.findById(id).map(this::toResponse)
-                .orElseThrow(() -> new IllegalArgumentException("ActivityEquipment not found: " + id));
-    }
 
     /**
-     * Returnerer alle relationer, evt. filtreret på activityId og/eller equipmentId.
-     * Hvis begge filtre er null, returneres alle poster.
+     * Finder én kobling.
+     *
+     * @throws IllegalArgumentException hvis ikke fundet
+     */
+    @Transactional(readOnly = true)
+    public ActivityEquipmentResponse get(Long activityId, Long equipmentId) {
+        return repo.findById(aeId(activityId, equipmentId))
+                .map(this::toResponse)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "ActivityEquipment not found: (" + activityId + "," + equipmentId + ")"));
+    }
+
+
+    /**
+     * Lister koblinger, evt. filtreret.
      */
     @Transactional(readOnly = true)
     public List<ActivityEquipmentResponse> list(Long activityId, Long equipmentId) {
@@ -93,22 +97,24 @@ public class ActivityEquipmentService {
     }
 
     /**
-     * Opdaterer en eksisterende relation. Understøtter partial update.
+     * Opdaterer en kobling (partial).
      *
-     * @throws IllegalArgumentException hvis id ikke findes
+     * @throws IllegalArgumentException hvis ikke fundet, eller hvis ny nøgle giver duplikat
      */
     @Transactional
-    public ActivityEquipmentResponse update(Long id, ActivityEquipmentRequest req) {
-        ActivityEquipment ae = repo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("ActivityEquipment not found: " + id));
+    public ActivityEquipmentResponse update(Long activityId, Long equipmentId, ActivityEquipmentRequest req) {
+        var id = aeId(activityId, equipmentId);
+        var ae = repo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "ActivityEquipment not found: (" + activityId + "," + equipmentId + ")"));
 
         if (req.activityId() != null && !req.activityId().equals(ae.getActivity().getId())) {
-            Activity activity = activityRepo.findById(req.activityId())
+            var activity = activityRepo.findById(req.activityId())
                     .orElseThrow(() -> new IllegalArgumentException("Activity not found: " + req.activityId()));
             ae.setActivity(activity);
         }
         if (req.equipmentId() != null && !req.equipmentId().equals(ae.getEquipment().getId())) {
-            Equipment equipment = equipmentRepo.findById(req.equipmentId())
+            var equipment = equipmentRepo.findById(req.equipmentId())
                     .orElseThrow(() -> new IllegalArgumentException("Equipment not found: " + req.equipmentId()));
             ae.setEquipment(equipment);
         }
@@ -117,29 +123,28 @@ public class ActivityEquipmentService {
             ae.setQuantity(req.quantity());
         }
 
-        // Tjek duplikat efter evt. ændring
-        if (repo.existsByActivity_IdAndEquipment_Id(ae.getActivity().getId(), ae.getEquipment().getId())) {
-            // tillad, hvis det er "samme række" som vi opdaterer
-            repo.findByActivity_IdAndEquipment_Id(ae.getActivity().getId(), ae.getEquipment().getId())
-                    .filter(existing -> !existing.getId().equals(ae.getId()))
-                    .ifPresent(existing -> {
-                        throw new IllegalArgumentException("ActivityEquipment already exists for activityId="
-                                + ae.getActivity().getId() + " and equipmentId=" + ae.getEquipment().getId());
-                    });
+        // Duplikat-beskyttelse når nøgler ændres
+        var newActId = ae.getActivity().getId();
+        var newEqId  = ae.getEquipment().getId();
+        if (!(newActId.equals(activityId) && newEqId.equals(equipmentId))
+                && repo.existsByActivity_IdAndEquipment_Id(newActId, newEqId)) {
+            throw new IllegalArgumentException("Relation already exists for activityId="
+                    + newActId + " and equipmentId=" + newEqId);
         }
 
         return toResponse(repo.save(ae));
     }
 
     /**
-     * Sletter en relation.
+     * Sletter koblingen.
      *
-     * @throws IllegalArgumentException hvis id ikke findes
+     * @throws IllegalArgumentException hvis ikke fundet
      */
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long activityId, Long equipmentId) {
+        var id = aeId(activityId, equipmentId);
         if (!repo.existsById(id)) {
-            throw new IllegalArgumentException("ActivityEquipment not found: " + id);
+            throw new IllegalArgumentException("ActivityEquipment not found: (" + activityId + "," + equipmentId + ")");
         }
         repo.deleteById(id);
     }
@@ -155,9 +160,8 @@ public class ActivityEquipmentService {
 
     private ActivityEquipmentResponse toResponse(ActivityEquipment ae) {
         return new ActivityEquipmentResponse(
-                ae.getId(),
                 ae.getActivity().getId(),
-                ae.getActivity().getName(),
+                ae.getActivity().getName(),          // <-- byttes op foran
                 ae.getEquipment().getId(),
                 ae.getEquipment().getEquipmentName(),
                 ae.getQuantity()

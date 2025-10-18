@@ -58,7 +58,7 @@ public class RosterService {
             throw new IllegalArgumentException("User is not an EMPLOYEE: " + req.employeeId());
         }
 
-        if (repo.existsByEmployee_IdAndWorkDate(req.employeeId(), req.workDate())) {
+        if (repo.existsByCustomer_IdAndWorkDate(req.employeeId(), req.workDate())) {
             throw new IllegalArgumentException("Roster already exists for employee/date");
         }
 
@@ -105,7 +105,7 @@ public class RosterService {
             // Tjek unikt constraint når employee+date ændres
             Long empId = r.getCustomer() != null ? r.getCustomer().getId() : req.employeeId();
             Long checkEmpId = empId != null ? empId : req.employeeId();
-            if (checkEmpId != null && repo.existsByEmployee_IdAndWorkDate(checkEmpId, req.workDate())) {
+            if (checkEmpId != null && repo.existsByCustomer_IdAndWorkDate(checkEmpId, req.workDate())) {
                 throw new IllegalArgumentException("Roster already exists for employee/date");
             }
             r.setWorkDate(req.workDate());

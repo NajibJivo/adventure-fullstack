@@ -43,14 +43,14 @@ public class SaleLineService {
 
         int qty = requirePositive(req.quantity(), "quantity");
 
-        BigDecimal price = req.unitPrice() != null ? req.unitPrice() : product.getPrice();
-        requireNonNegative(price, "unitPrice");
+        // Historisk pris låses fra det aktuelle produkt på købstidspunktet
+        BigDecimal unitPrice = product.getPrice();
 
         SaleLine line = new SaleLine();
         line.setSale(sale);
         line.setProduct(product);
         line.setQuantity(qty);
-        line.setUnitPrice(price);
+        line.setUnitPrice(unitPrice);
 
         return toResponse(repo.save(line));
     }
@@ -86,20 +86,11 @@ public class SaleLineService {
                     .orElseThrow(() -> new IllegalArgumentException("Product not found: " + req.productId()));
             line.setProduct(product);
             // hvis unitPrice ikke er angivet i req, så opdater til produktets nuværende pris
-            if (req.unitPrice() == null) {
-                line.setUnitPrice(product.getPrice());
-            }
         }
 
         if (req.quantity() != null) {
             line.setQuantity(requirePositive(req.quantity(), "quantity"));
         }
-
-        if (req.unitPrice() != null) {
-            requireNonNegative(req.unitPrice(), "unitPrice");
-            line.setUnitPrice(req.unitPrice());
-        }
-
         return toResponse(repo.save(line));
     }
 
@@ -134,12 +125,6 @@ public class SaleLineService {
             throw new IllegalArgumentException(field + " must be > 0");
         }
         return val;
-    }
-
-    private void requireNonNegative(BigDecimal val, String field) {
-        if (val == null || val.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException(field + " must be >= 0");
-        }
     }
 
     private SaleLineResponse toResponse(SaleLine l) {

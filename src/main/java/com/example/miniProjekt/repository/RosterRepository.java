@@ -38,10 +38,10 @@ public interface RosterRepository extends JpaRepository<Roster, Long> {
 
     /**
      * Find en medarbejders vagter på en bestemt dato.
-     * @param employeeId ID på medarbejder
+     * @param customerId ID på medarbejder
      * @param *date dato (lokal kalenderdag)
      * @return liste af Roster
      */
-    boolean existsByEmployee_IdAndWorkDate(Long employeeId, LocalDate workDate);
+    boolean existsByCustomer_IdAndWorkDate(Long customerId, LocalDate workDate);
 
 }

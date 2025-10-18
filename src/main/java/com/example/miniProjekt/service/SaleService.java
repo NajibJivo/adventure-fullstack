@@ -3,7 +3,6 @@ package com.example.miniProjekt.service;
 import com.example.miniProjekt.model.Product;
 import com.example.miniProjekt.model.Sale;
 import com.example.miniProjekt.model.SaleLine;
-import com.example.miniProjekt.repository.CustomerRepository;
 import com.example.miniProjekt.repository.ProductRepository;
 import com.example.miniProjekt.repository.SaleLineRepository;
 import com.example.miniProjekt.repository.SaleRepository;
@@ -23,16 +22,13 @@ public class SaleService {
     private final SaleRepository saleRepo;
     private final SaleLineRepository lineRepo;
     private final ProductRepository productRepo;
-    private final CustomerRepository customerRepo;
 
     public SaleService(SaleRepository saleRepo,
                        SaleLineRepository lineRepo,
-                       ProductRepository productRepo,
-                       CustomerRepository customerRepo) {
+                       ProductRepository productRepo) {
         this.saleRepo = saleRepo;
         this.lineRepo = lineRepo;
         this.productRepo = productRepo;
-        this.customerRepo = customerRepo;
     }
 
     /** CREATE **/

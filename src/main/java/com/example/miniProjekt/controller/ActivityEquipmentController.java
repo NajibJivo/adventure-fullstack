@@ -11,9 +11,8 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * REST-controller for Activity–Equipment relationen.
- * <p>
- * Modtager/returnerer DTO'er og delegere al logik til {@link ActivityEquipmentService}.
+ * REST-API for koblingen mellem Activity og Equipment.
+ * Path er scoped til én aktivitet: /activities/{activityId}/equipment
  */
 @RestController
 @RequestMapping("/activities/{activityId}/equipment")
@@ -25,56 +24,54 @@ public class ActivityEquipmentController {
     }
 
 
-    /**
-     * Opretter en ny relation mellem en aktivitet og et stykke udstyr.
-     *
-     * @param req DTO med activityId, equipmentId og quantity
-     * @return 201 Created + den oprettede ressource
-     */
-    @PostMapping
-    public ResponseEntity<ActivityEquipmentResponse> create(@RequestBody ActivityEquipmentRequest req) {
-        ActivityEquipmentResponse created = service.create(req);
-        URI location = URI.create("/api/activity-equipment/" + created.id());
-        return ResponseEntity.created(location).body(created);
-    }
-
-    /**
-     * Henter én relation på id.
-     */
-    @GetMapping("/{id}")
-    public ActivityEquipmentResponse get(@PathVariable Long id) {
-        return service.get(id);
-    }
-
-    /**
-     * Liste-endpoint med enkle filtre:
-     * - ?activityId=... for at filtrere på aktivitet
-     * - ?equipmentId=... for at filtrere på udstyr
-     * Uden filtre returneres alle relationer.
-     */
+    /** LIST alle equipment for en activity (evt. filtrér på equipmentId)
+     *    * Returnerer alle koblinger for en aktivitet. */
     @GetMapping
-    public List<ActivityEquipmentResponse> list(
-            @RequestParam(required = false) Long activityId,
-            @RequestParam(required = false) Long equipmentId
-    ) {
+    public List<ActivityEquipmentResponse> list(@PathVariable Long activityId,
+                                                @RequestParam(required = false) Long equipmentId) {
         return service.list(activityId, equipmentId);
     }
 
-    /**
-     * Opdaterer en eksisterende relation (partial update er tilladt).
-     */
-    @PutMapping("/{id}")
-    public ActivityEquipmentResponse update(@PathVariable Long id,
-                                            @RequestBody ActivityEquipmentRequest req) {
-        return service.update(id, req);
+    /** CREATE – body indeholder equipmentId + quantity
+     *  Opretter en kobling mellem aktivitet og udstyr */
+    @PostMapping
+    public ResponseEntity<ActivityEquipmentResponse> create(@PathVariable Long activityId,
+                                                            @RequestBody ActivityEquipmentRequest req) {
+        // sikr at activityId i body matcher path (eller sæt det)
+        if (req.activityId() == null || !req.activityId().equals(activityId)) {
+            req = new ActivityEquipmentRequest(activityId, req.equipmentId(), req.quantity());
+        }
+        ActivityEquipmentResponse created = service.create(req);
+        URI location = URI.create(String.format(
+                "/activities/%d/equipment/%d", created.activityId(), created.equipmentId()
+        ));
+        return ResponseEntity.created(location).body(created);
     }
 
-    /**
-     * Sletter en relation.
+    /** READ én relation (komposit nøgle i path)
+     *    * Henter én kobling identificeret af komposit nøgle. */
+    @GetMapping("/{equipmentId}")
+    public ActivityEquipmentResponse get(@PathVariable Long activityId,
+                                         @PathVariable Long equipmentId) {
+        return service.get(activityId, equipmentId);
+    }
+
+    /** UPDATE (komposit nøgle i path)
+     * Opdaterer quantity eller skifter udstyr/aktivitet (partial update tilladt).
      */
-    @DeleteMapping("/{id}")
+    @PutMapping("/{equipmentId}")
+    public ActivityEquipmentResponse update(@PathVariable Long activityId,
+                                            @PathVariable Long equipmentId,
+                                            @RequestBody ActivityEquipmentRequest req) {
+        return service.update(activityId, equipmentId, req);
+    }
+
+    /** DELETE (komposit nøgle i path)
+     *    * Sletter koblingen.*/
+    @DeleteMapping("/{equipmentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        service.delete(id);
+    public void delete(@PathVariable Long activityId,
+                       @PathVariable Long equipmentId) {
+        service.delete(activityId, equipmentId);
     }
 }

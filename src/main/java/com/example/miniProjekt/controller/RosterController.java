@@ -56,12 +56,6 @@ public class RosterController {
         return service.get(id);
     }
 
-    /** READ all **/
-    @GetMapping
-    public List<RosterResponse> list() {
-        return service.list();
-    }
-
     /** UPDATE — valgfri customerId (null fjerner koblingen) **/
     @PutMapping("/{id}")
     public RosterResponse update(@PathVariable Long id, @RequestBody RosterRequest req) {
