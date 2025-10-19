@@ -1,4 +1,44 @@
-// --- Helper: hent query-param: 
+// API helper
+const api = {
+    getActivityById: async (id) => {
+        const res = await fetch(`/api/activities/${id}`);
+        if (!res.ok) throw new Error(`Kunne ikke hente aktivitet: ${res.status}`);
+        return res.json();
+    },
+
+    updateActivity: async (id, activity) => {
+        const res = await fetch(`/api/activities/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(activity),
+        });
+        if (!res.ok) {
+            const txt = await res.text();
+            throw new Error(txt || `Update fejlede: ${res.status}`);
+        }
+        return res.json();
+    }
+};
+
+// Hjælpefunktion fra activity.js
+function normalizeDateInput(value) {
+    if (!value) return null;
+    if (value.includes(":") && value.split(":").length === 2) {
+        return value + ":00";
+    }
+    return value;
+}
+
+// --- Helper: hent query-param fra URL ---
+function getQueryParam(key) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(key);
+}
+
+// Resten af din kode...
+
+
+// --- Helper: hent query-param:
 // Kort sagt: måde at få ID’et fra URL’en på, så vi ved hvad vi skal redigere---
 function getQueryParam(key) {
   const params = new URLSearchParams(window.location.search);

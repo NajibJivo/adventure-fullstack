@@ -1,188 +1,252 @@
-/** base URL **/ 
+/** ROLLEBASERET BOOKING SYSTEM **/
+
+// Brugerinfo
+let currentUser = null;
+let isAdmin = false;
+
+// Hent nuværende bruger og rolle
+async function getCurrentUser() {
+    try {
+        const res = await fetch('/api/auth/current');
+        if (res.ok) {
+            currentUser = await res.json();
+            isAdmin = currentUser.role === 'OWNER' || currentUser.isAdmin;
+            console.log('Bruger:', currentUser.name, '| Admin:', isAdmin);
+        }
+    } catch (err) {
+        console.error('Kunne ikke hente brugerinfo:', err);
+    }
+}
+
+// API
 const api = {
-  base: "/api/bookings",
+    base: "/api/bookings",
 
-  /** GET henter alle bookinger fra serveren
-      await fetch(api.base) sender et GET request.
-      Hvis serveren fx svarer med 200 OK, så returneres listen i JSON **/
-  getAll: async () => {
-    const res = await fetch(api.base);
-    if (!res.ok) throw new Error(`Fejl ved hentning: ${res.status}`);
-    return res.json();
-  },
+    getAll: async () => {
+        const res = await fetch(api.base);
+        if (!res.ok) throw new Error(`Fejl ved hentning: ${res.status}`);
+        return res.json();
+    },
 
-  /* POST fortæller serveren, at vi vil oprette noget nyt
-     sender data fra formularen som JSON til backend */
-  createBooking: async (booking) => {
-    const res = await fetch(api.base, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(booking),
-    });
-    if (!res.ok) throw new Error(`Fejl ved oprettelse: ${res.status}`);
-    return res.json();
-  },
+    createBooking: async (booking) => {
+        const res = await fetch(api.base, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(booking),
+        });
+        if (!res.ok) throw new Error(`Fejl ved oprettelse: ${res.status}`);
+        return res.json();
+    },
 
-  /* PUT bruges til at opdatere  */
-  updateBooking: async (id, booking) => {
-    const res = await fetch(`${api.base}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(booking),
-    });
-    if (!res.ok) throw new Error(`Fejl ved opdatering: ${res.status}`);
-    return res.json();
-  },
+    updateBooking: async (id, booking) => {
+        const res = await fetch(`${api.base}/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(booking),
+        });
+        if (!res.ok) throw new Error(`Fejl ved opdatering: ${res.status}`);
+        return res.json();
+    },
 
-  /* DELETE bruges til at slette */
-  deleteBooking: async (id) => {
-    const res = await fetch(`${api.base}/${id}`, { method: "DELETE" });
-    if (!res.ok) throw new Error(`Fejl ved sletning: ${res.status}`);
-  },
+    deleteBooking: async (id) => {
+        const res = await fetch(`${api.base}/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error(`Fejl ved sletning: ${res.status}`);
+    },
 
-  getBookingById: async (id) => {
-    const res = await fetch(`${api.base}/${id}`);
-    if (!res.ok) throw new Error(`Fejl ved hentning: ${res.status}`);
-    return res.json();
-  },
+    getBookingById: async (id) => {
+        const res = await fetch(`${api.base}/${id}`);
+        if (!res.ok) throw new Error(`Fejl ved hentning: ${res.status}`);
+        return res.json();
+    },
 };
 
-
-// --- Hjælpere ---
-
-/* Gør en ISO-dato, exempel ("2025-10-09T10:30:00") mere læsevenlig på dansk
-   exempel resultat         "09. okt. 2025, 10:30" */
+// Hjælpere
 function formatDateTime(s) {
-  if (!s) return "Ikke angivet";
-  const d = new Date(s);
-  return d.toLocaleString("da-DK", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+    if (!s) return "Ikke angivet";
+    const d = new Date(s);
+    return d.toLocaleString("da-DK", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
 }
 
-/* Tilføjer sekunder (:00) til input fra <input type="datetime-local">, så backend altid får fuld ISO-tid */
 function normalizeDateInput(value) {
-  if (!value) return null;
-  if (value.includes(":") && value.split(":").length === 2) return value + ":00";
-  return value;
+    if (!value) return null;
+    if (value.includes(":") && value.split(":").length === 2) return value + ":00";
+    return value;
 }
 
+// Load aktiviteter til dropdown
+async function loadActivities() {
+    try {
+        const response = await fetch('/api/activities');
+        const data = await response.json();
+        const activities = data.content || data;
 
-// --- Rendering ---
-/* laver et HTML-kort for hver booking */
+        const select = document.getElementById('activityId');
+        select.innerHTML = '<option value="">-- Vælg aktivitet --</option>';
+        activities.forEach(a => {
+            select.innerHTML += `<option value="${a.id}">${a.name} - ${a.price} kr</option>`;
+        });
+    } catch (err) {
+        console.error('Kunne ikke hente aktiviteter:', err);
+    }
+}
+
+// Load kunder til dropdown (kun admin)
+async function loadCustomers() {
+    try {
+        const response = await fetch('/api/customers');
+        const customers = await response.json();
+
+        const select = document.getElementById('customerId');
+        select.innerHTML = '<option value="">-- Vælg kunde --</option>';
+        customers.forEach(c => {
+            select.innerHTML += `<option value="${c.id}">${c.name} (${c.email})</option>`;
+        });
+    } catch (err) {
+        console.error('Kunne ikke hente kunder:', err);
+    }
+}
+
+// Rendering
 function createBookingCard(b) {
-  return `
+    const editDeleteButtons = isAdmin ? `
+    <button class="btn-edit" data-id="${b.id}">Rediger</button>
+    <button class="btn-delete" data-id="${b.id}">Slet</button>
+  ` : '';
+
+    return `
     <div class="activity-card">
       <div class="activity-content">
-        <h3>${b.activityName || "Ukendt aktivitet"}</h3>
-        <p><strong>Kunde:</strong> ${b.customerName || "Ukendt"}</p>
-        <p><strong>Start:</strong> ${formatDateTime(b.startDatetime)}</p>
+        <h3>Booking #${b.id}</h3>
+        ${isAdmin ? `<p><strong>Kunde:</strong> ${b.customerName || "Ukendt"}</p>` : ''}
+        <p><strong>Start:</strong> ${formatDateTime(b.startDateTime)}</p>
         <p><strong>Deltagere:</strong> ${b.participants}</p>
         <p><strong>Status:</strong> ${b.bookingStatus}</p>
-        ${b.instructorName ? `<p><strong>Instruktør:</strong> ${b.instructorName}</p>` : ""}
-        <button class="btn-edit" data-id="${b.id}">Rediger</button>
-        <button class="btn-delete" data-id="${b.id}">Slet</button>
+        ${b.instructorName && isAdmin ? `<p><strong>Instruktør:</strong> ${b.instructorName}</p>` : ""}
+        ${editDeleteButtons}
       </div>
     </div>
   `;
 }
 
-/* tager hele listen fra getAll() og viser alle kortene */
 function displayBookings(list) {
-  const container = document.getElementById("bookings-container");
-  if (!list.length) {
-    container.innerHTML = '<div class="loading">Ingen bookinger fundet.</div>';
-    return;
-  }
-  container.innerHTML = list.map(createBookingCard).join("");
+    const container = document.getElementById("bookings-container");
+    if (!list.length) {
+        container.innerHTML = '<div class="loading">Ingen bookinger fundet.</div>';
+        return;
+    }
+    container.innerHTML = list.map(createBookingCard).join("");
 }
 
-// --- Formulardata ---
-/* læser inputfelterne i formularen */
-function readBookingForm() {
-  return {
-    id: document.getElementById("id").value || null,
-    activityId: Number(document.getElementById("activityId").value),
-    customerId: Number(document.getElementById("customerId").value),
-    startDatetime: document.getElementById("startDatetime").value,
-    participants: Number(document.getElementById("participants").value),
-    bookingStatus: document.getElementById("bookingStatus").value,
-    instructorName: document.getElementById("instructorName").value.trim() || null,
-  };
-}
-
-// --- Submit handler (CREATE) ---
-/*  læser alle felter, opretter booking, 
-    ger alert på booking er oprettet,
-    genindlæser siden så at man ser den nye booking */
+// Submit handler
 async function onBookingSubmit(e) {
-  e.preventDefault();
-  
-  const data = readBookingForm();
+    e.preventDefault();
 
-  if (!data.activityId || !data.customerId) return alert("Vælg aktivitet og kunde");
-  if (!data.startDatetime) return alert("Vælg startdato/tid");
-  if (!data.participants || data.participants < 1) return alert("Antal deltagere skal være mindst 1");
+    const activityId = Number(document.getElementById("activityId").value);
+    const startDatetime = document.getElementById("startDatetime").value;
+    const participants = Number(document.getElementById("participants").value);
 
-  try {
-    await api.createBooking({
-      activityId: data.activityId,
-      customerId: data.customerId,
-      startDatetime: normalizeDateInput(data.startDatetime),
-      participants: data.participants,
-      bookingStatus: data.bookingStatus,
-      instructorName: data.instructorName,
-    });
-    alert("Booking oprettet!");
-    window.location.reload();
-  } catch (err) {
-    console.error(err);
-    alert("Fejl: " + err.message);
-  }
+    // Valider
+    if (!activityId) return alert("Vælg en aktivitet");
+    if (isAdmin && !document.getElementById("customerId").value) return alert("Vælg en kunde");
+    if (!startDatetime) return alert("Vælg startdato/tid");
+    if (!participants || participants < 1) return alert("Antal deltagere skal være mindst 1");
+
+    // Byg payload
+    const payload = {
+        activityId,
+        customerId: isAdmin
+            ? Number(document.getElementById("customerId").value)
+            : currentUser.id,  // Kunde booker til sig selv
+        startDateTime: normalizeDateInput(startDatetime),  // ÆNDRET: startDateTime
+        participants,
+        bookingStatus: isAdmin
+            ? document.getElementById("bookingStatus").value
+            : "PENDING",  // Kunder laver altid PENDING bookings
+        instructorName: isAdmin
+            ? document.getElementById("instructorName").value.trim() || null
+            : null
+    };
+
+    try {
+        await api.createBooking(payload);
+        alert("Booking oprettet!");
+        window.location.reload();
+    } catch (err) {
+        console.error(err);
+        alert("Fejl: " + err.message);
+    }
 }
 
-// --- Init ---
-/* henter bookinger fra backend 
-   viser dem i HTML 
-   tilføjer event listeners til Gem, Rediger, Slet knapper */
+// Init
 document.addEventListener("DOMContentLoaded", async () => {
-  let bookings = [];
-  try {
-    bookings = await api.getAll();
-  } catch (err) {
-    console.error(err);
-  }
+    // 1. Hent brugerinfo FØRST
+    await getCurrentUser();
 
-  displayBookings(bookings);
+    // 2. Vis/skjul felter baseret på rolle
+    const customerField = document.getElementById('customer-field');
+    const statusField = document.getElementById('status-field');
+    const instructorField = document.getElementById('instructor-field');
 
-  const form = document.getElementById("booking-form");
-  if (form) form.addEventListener("submit", onBookingSubmit);
-
-  const container = document.getElementById("bookings-container");
-  container.addEventListener("click", (e) => {
-    const editBtn = e.target.closest(".btn-edit");
-    if (editBtn) {
-      window.location.href = `/edit-booking.html?id=${editBtn.dataset.id}`;
-      return;
+    if (isAdmin) {
+        customerField.style.display = 'flex';
+        statusField.style.display = 'flex';
+        instructorField.style.display = 'flex';
+        await loadCustomers();
+    } else {
+        customerField.style.display = 'none';
+        statusField.style.display = 'none';
+        instructorField.style.display = 'none';
     }
-    const delBtn = e.target.closest(".btn-delete");
-    if (delBtn && confirm("Er du sikker på at du vil slette denne booking?")) {
-      api.deleteBooking(delBtn.dataset.id).then(() => window.location.reload());
-    }
-  });
 
-  // --- cancel button ---
-  const cancelBtn = document.getElementById("btn-cancel");
-  if (cancelBtn) {
-    cancelBtn.addEventListener("click", () => {
-      form.reset();                  // ryd inputfelter
-      document.getElementById("id").value = ""; // slet skjult id
-      cancelBtn.hidden = true;       // skjul knappen igen
+    // 3. Hent aktiviteter
+    await loadActivities();
+
+    // 4. Hent bookinger
+    let bookings = [];
+    try {
+        bookings = await api.getAll();
+
+        // Filtrer: Kunder ser kun egne bookinger
+        if (!isAdmin && currentUser) {
+            bookings = bookings.filter(b => b.customerId === currentUser.id);
+        }
+    } catch (err) {
+        console.error(err);
+    }
+
+    displayBookings(bookings);
+
+    // 5. Form submit
+    const form = document.getElementById("booking-form");
+    if (form) form.addEventListener("submit", onBookingSubmit);
+
+    // 6. Bind knapper
+    const container = document.getElementById("bookings-container");
+    container.addEventListener("click", (e) => {
+        const editBtn = e.target.closest(".btn-edit");
+        if (editBtn && isAdmin) {
+            window.location.href = `/edit-booking.html?id=${editBtn.dataset.id}`;
+            return;
+        }
+        const delBtn = e.target.closest(".btn-delete");
+        if (delBtn && isAdmin && confirm("Er du sikker på at du vil slette denne booking?")) {
+            api.deleteBooking(delBtn.dataset.id).then(() => window.location.reload());
+        }
     });
-  }
 
+    // 7. Cancel button
+    const cancelBtn = document.getElementById("btn-cancel");
+    if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+            form.reset();
+            document.getElementById("id").value = "";
+            cancelBtn.hidden = true;
+        });
+    }
 });

@@ -16,64 +16,65 @@
           <a href="/logout" style="margin-left: auto; color: #d9534f;">Log ud</a>
       </nav>
     </header>
-
     <section class="admin-panel">
-      <h2>Opret booking</h2>
-      <form id="booking-form">
-        
-        <input type="hidden" id="id" name="id" />
+        <h2>Opret booking</h2>
+        <form id="booking-form">
 
-        <label>
-          Aktivitet *
-          <select id="activityId" required>
-            <option value="">-- Indlæser aktiviteter --</option>
-          </select>
-        </label>
+            <input type="hidden" id="id" name="id" />
 
-        <label>
-          Kunde *
-          <select id="customerId" required>
-            <option value="">-- Indlæser kunder --</option>
-          </select>
-        </label>
+            <label>
+                Aktivitet *
+                <select id="activityId" required>
+                    <option value="">-- Indlæser aktiviteter --</option>
+                </select>
+            </label>
 
-        <label>
-          Start dato & tid *
-          <input id="startDatetime" name="startDatetime" type="datetime-local" required />
-        </label>
+            <!-- KUNDE DROPDOWN - KUN SYNLIG FOR ADMIN -->
+            <label id="customer-field" style="display: none;">
+                Kunde *
+                <select id="customerId" required>
+                    <option value="">-- Indlæser kunder --</option>
+                </select>
+            </label>
 
-        <label>
-          Antal deltagere *
-          <input id="participants" name="participants" type="number" min="1" value="1" required />
-        </label>
+            <label>
+                Start dato & tid *
+                <input id="startDatetime" name="startDatetime" type="datetime-local" required />
+            </label>
 
-        <label>
-          Status *
-          <select id="bookingStatus" name="bookingStatus" required>
-            <option value="PENDING">Afventende</option>
-            <option value="CONFIRMED">Bekræftet</option>
-            <option value="CANCELLED">Aflyst</option>
-          </select>
-        </label>
+            <label>
+                Antal deltagere *
+                <input id="participants" name="participants" type="number" min="1" value="1" required />
+            </label>
 
-        <label>
-          Instruktør 
-          <input id="instructorName" name="instructorName" type="text" placeholder="F.eks. Anders Hansen" />
-        </label>
+            <!-- STATUS - KUN SYNLIG FOR ADMIN -->
+            <label id="status-field" style="display: none;">
+                Status *
+                <select id="bookingStatus" name="bookingStatus" required>
+                    <option value="PENDING">Afventende</option>
+                    <option value="CONFIRMED">Bekræftet</option>
+                    <option value="CANCELLED">Aflyst</option>
+                </select>
+            </label>
 
-        <!-- Knapper i deres egen wrapper -->
-        <div class="form-buttons">
-          <button type="submit">Gem</button>
-          <button type="button" id="btn-cancel" class="btn-secondary" hidden>Annuller</button>
-        </div>
-      </form>
+            <!-- INSTRUKTØR - KUN SYNLIG FOR ADMIN -->
+            <label id="instructor-field" style="display: none;">
+                Instruktør
+                <input id="instructorName" name="instructorName" type="text" placeholder="F.eks. Anders Hansen" />
+            </label>
+
+            <div class="form-buttons">
+                <button type="submit">Gem</button>
+                <button type="button" id="btn-cancel" class="btn-secondary" hidden>Annuller</button>
+            </div>
+        </form>
     </section>
 
     <div class="container">
-      <h2 class="page-title">Oversigt Over Bookinger</h2>
-      <div id="bookings-container" class="activities-grid">
-        <div class="loading">Indlæser bookinger...</div>
-      </div>
+        <h2 class="page-title">Mine Bookinger</h2>
+        <div id="bookings-container" class="activities-grid">
+            <div class="loading">Indlæser bookinger...</div>
+        </div>
     </div>
 
     <script src="booking.js"></script>
