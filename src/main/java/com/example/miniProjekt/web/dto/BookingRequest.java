@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public record BookingRequest(
         Long activityId,
         Long customerId,
-        LocalDateTime startDatetime,
+        LocalDateTime startDateTime,
         Integer participants,
         BookingStatus bookingStatus, // send fx EDIT ved oprettelse
         String instructorName

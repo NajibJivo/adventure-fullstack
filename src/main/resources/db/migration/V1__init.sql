@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS booking(
     customer_id     BIGINT           NOT NULL,
     start_datetime  DATETIME         NOT NULL,
     participants    INT              NOT NULL,
-    booking_status ENUM('EDIT', 'CANCELLED') NOT NULL,
+    booking_status ENUM('PENDING', 'CONFIRMED', 'CANCELLED') NOT NULL,
     instructor_name VARCHAR(100),
 
     CONSTRAINT fk_booking_activity

@@ -53,7 +53,7 @@ public class BookingService {
         Booking b = new Booking();
         b.setActivity(activity);
         b.setCustomer(customer);
-        b.setStartDateTime(req.startDatetime());
+        b.setStartDateTime(req.startDateTime());
         b.setParticipants(req.participants());
         b.setInstructorName(req.instructorName());
         b.setBookingStatus(req.bookingStatus() == null ? BookingStatus.PENDING : req.bookingStatus());
@@ -90,7 +90,7 @@ public class BookingService {
             b.setCustomer(customerRepo.findById(req.customerId())
                  .orElseThrow(() -> new IllegalArgumentException("Customer not found: " + req.customerId())));
         }
-        if(req.startDatetime()!=null){b.setStartDateTime(req.startDatetime());}
+        if(req.startDateTime()!=null){b.setStartDateTime(req.startDateTime());}
         if(req.participants() != null) {b.setParticipants(req.participants());}
         if(req.instructorName() != null) {b.setInstructorName(req.instructorName());}
         if(req.bookingStatus() != null) {b.setBookingStatus(req.bookingStatus());}
@@ -124,8 +124,8 @@ public class BookingService {
     private void validateCreate(BookingRequest req) {
         if (req.activityId() == null) throw new IllegalArgumentException("activityId is required");
         if (req.customerId() == null) throw new IllegalArgumentException("customerId is required");
-        if (req.startDatetime() == null) throw new IllegalArgumentException("startDateTime is required");
-        requireFutureOrNow(req.startDatetime(), "startDateTime");
+        if (req.startDateTime() == null) throw new IllegalArgumentException("startDateTime is required");
+        requireFutureOrNow(req.startDateTime(), "startDateTime");
         if (req.participants() == null || req.participants() <= 0) {
             throw new IllegalArgumentException("participants must be > 0");
         }

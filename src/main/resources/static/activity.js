@@ -1,10 +1,10 @@
 // --- Mock API (plastikmad) ---
 // Hvorfor: Vi vil kunne færdiggøre US5.2 (UI-flow) uafhængigt af backend-konflikter.
 // Antagelse: API returnerer et objekt inkl. id som backend normalt ville gøre.
-
+let activities = [];
+// Resten af koden forbliver det samme
 const api = {
-  /* base path, gør det nemmere at ændre endpoint ét sted */
-  base: "/api/activities",
+
 
   /* hente alle aktiviteter fra serveren, backend
   fetch: sender en HTTP GET-anmodning
@@ -132,12 +132,17 @@ function createActivityCard(a) {
 // Kører når DOM’en er helt loaded
 document.addEventListener("DOMContentLoaded", async () => {
   // 1. Hent aktiviteter fra backend
-  try {
-    activities = await api.getAll(); // GET /api/activities
-  } catch (err) {
-    console.error("Kunne ikke hente aktiviteter fra server:", err);
-    activities = []; // fallback: tom liste
-  }
+    try {
+        const response = await api.getAll(); // GET /api/activities
+
+        // Spring Data returnerer Page<T> med .content property
+        activities = response.content || response;
+
+        console.log("✅ Hentet " + activities.length + " aktiviteter");
+    } catch (err) {
+        console.error("❌ Kunne ikke hente aktiviteter:", err);
+        activities = [];
+    }
 
   // 2. Render aktivitetkort på siden
   displayActivities();
@@ -217,4 +222,18 @@ async function onMiniSubmit(e) {
     console.error(err);
     alert("Fejl ved oprettelse: " + (err.message || err));
   }
+}
+// --- Rendering af aktivitetkort ---
+function displayActivities() {
+    const container = document.getElementById("activities-container");
+
+    // Sikr at activities er et array
+    const activityArray = Array.isArray(activities) ? activities : [];
+
+    if (activityArray.length === 0) {
+        container.innerHTML = '<div class="loading">Ingen aktiviteter fundet.</div>';
+        return;
+    }
+
+    container.innerHTML = activityArray.map(createActivityCard).join("");
 }
