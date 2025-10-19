@@ -1,20 +1,16 @@
 package com.example.miniProjekt.controller;
 
-import com.example.miniProjekt.model.Sale;
-import com.example.miniProjekt.model.SaleLine;
 import com.example.miniProjekt.service.SaleService;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.example.miniProjekt.web.dto.SaleRequest;
+import com.example.miniProjekt.web.dto.SaleResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.math.BigDecimal;
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/sales")
+@RequestMapping("api/sales")
 public class SaleController {
     private final SaleService service;
 
@@ -22,59 +18,29 @@ public class SaleController {
         this.service = service;
     }
 
-    /** Create sale (201 + Location). Optional: ?when=2025-10-10T12:00:00 */
+    /** CREATE **/
     @PostMapping
-    public ResponseEntity<Sale> create(
-            @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime when) {
-
-        Sale saved = service.createSale(when);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(saved.getId()).toUri();
-        return ResponseEntity.created(location).body(saved);
+    public ResponseEntity<SaleResponse> create(@RequestBody SaleRequest req) {
+        SaleResponse created = service.create(req);
+        URI location = URI.create("/api/sales/" + created.id());
+        return ResponseEntity.created(location).body(created);
     }
 
-    /** Add line: { "productId": 1, "quantity": 2, "unitPrice": 19.95 (optional) } */
-    @PostMapping("/{saleId}/lines")
-    public ResponseEntity<SaleLine> addLine(@PathVariable Long saleId,
-                                            @RequestBody AddLineRequest req) {
-        SaleLine line = service.addLine(saleId, req.productId(), req.quantity(), req.unitPrice());
-        return ResponseEntity.ok(line);
+    /** READ by id **/
+    @GetMapping("/{id}")
+    public SaleResponse get(@PathVariable Long id) {
+        return service.get(id);
     }
 
-    /** List lines for sale */
-    @GetMapping("/{saleId}/lines")
-    public List<SaleLine> listLines(@PathVariable Long saleId) {
-        return service.listLines(saleId);
+    /** READ all **/
+    @GetMapping
+    public List<SaleResponse> list() {
+        return service.list();
     }
 
-    /** Remove specific product from sale */
-    @DeleteMapping("/{saleId}/lines/{productId}")
-    public ResponseEntity<Void> removeLine(@PathVariable Long saleId,
-                                           @PathVariable Long productId) {
-        service.removeLine(saleId, productId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build(); // 204
     }
-
-    /** Total for sale */
-    @GetMapping("/{saleId}/total")
-    public BigDecimal getTotal(@PathVariable Long saleId) {
-        return service.getTotal(saleId);
-    }
-
-    /** Request DTO used only for the addLine endpoint */
-    public record AddLineRequest(Long productId, int quantity, BigDecimal unitPrice) {}
-
-
-    @PutMapping("/{saleId}/lines/{productId}")
-    public ResponseEntity<SaleLine> updateLine(@PathVariable Long saleId,
-                                               @PathVariable Long productId,
-                                               @RequestBody UpdateLineRequest req) {
-        SaleLine line = service.updateLine(saleId, productId, req.quantity(), req.unitPrice());
-        return ResponseEntity.ok(line);
-    }
-
-    /** Request DTO for update */
-    public record UpdateLineRequest(Integer quantity, BigDecimal unitPrice) {}
-
 }

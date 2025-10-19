@@ -4,29 +4,40 @@ package com.example.miniProjekt.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "activity_equipment")
+@Table(name = "activity_equipment") // unikhed dækkes af PK
 public class ActivityEquipment {
     @EmbeddedId
-    private ActivityEquipmentId id = new ActivityEquipmentId();
+    private ActivityEquipmentId  id;
 
-    @ManyToOne(optional = false)
+    // FK -> activity(id)
     @MapsId("activityId")
-    @JoinColumn(name = "activity_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "activity_id", nullable = false)
     private Activity activity;
 
-    @ManyToOne(optional = false)
+    // FK -> equipment(id)
     @MapsId("equipmentId")
-    @JoinColumn(name = "equipment_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "equipment_id", nullable = false)
     private Equipment equipment;
 
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
+    /** JPA kræver en no-args constructor */
     public ActivityEquipment() {
     }
 
-    public ActivityEquipment( Activity activity, Equipment equipment) {
+    /** Bekvem constructor uden id (bruges ved create) */
+    public ActivityEquipment(Activity activity, Equipment equipment, Integer quantity) {
         this.activity = activity;
         this.equipment = equipment;
+        this.quantity = quantity;
         this.id = new ActivityEquipmentId(activity.getId(), equipment.getId());
     }
+
+
+    /** -------- getters & setters -------- */
 
     public ActivityEquipmentId getId() {
         return id;
@@ -42,8 +53,10 @@ public class ActivityEquipment {
 
     public void setActivity(Activity activity) {
         this.activity = activity;
-        if (activity != null) this.id.setActivityId(activity.getId());
-
+        if (activity != null) {
+            if (this.id == null) this.id = new ActivityEquipmentId();
+            this.id.setActivityId(activity.getId());
+        }
     }
 
     public Equipment getEquipment() {
@@ -52,6 +65,17 @@ public class ActivityEquipment {
 
     public void setEquipment(Equipment equipment) {
         this.equipment = equipment;
-        if (equipment != null) this.id.setEquipmentId(equipment.getId());
+        if (equipment != null) {
+            if (this.id == null) this.id = new ActivityEquipmentId();
+            this.id.setEquipmentId(equipment.getId());
+        }
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 }

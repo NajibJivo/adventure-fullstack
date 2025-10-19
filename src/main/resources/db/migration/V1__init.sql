@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS equipment (
 CREATE TABLE IF NOT EXISTS activity_equipment (
     activity_id     BIGINT          NOT NULL,
     equipment_id    BIGINT          NOT NULL,
+    quantity        INT   NOT NULL DEFAULT 1,
     PRIMARY KEY (activity_id, equipment_id),
     CONSTRAINT fk_activity_equipment_activity
         FOREIGN KEY (activity_id) REFERENCES activity(id)
